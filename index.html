@@ -31,7 +31,7 @@
 		<script>
 			var vertexColor = [];
 			vertexColor.push(0.3, 0.3, 0.3, 1.0);
-			var sphereDivisions = 0;
+			var sphereDivisions = 2;
 			var rotY = 0;
 			var rotX = 0;
 			var vertexBuffer = null;
@@ -44,27 +44,6 @@
 			var mvMatrix = mat4.create();
 			var pMatrix = mat4.create();
 			var perspective = true;
-			window.onkeydown = checkKey;
-			function checkKey(ev){
-				console.log(ev.keyCode);
-				switch(ev.keyCode){
-					case 189:
-					case 173:
-					case 109:{
-						if (sphereDivisions >0) --sphereDivisions;
-						initBuffers();
-						break;
-					}
-					case 49:
-					case 107:{
-						if (sphereDivisions < 6) ++sphereDivisions;
-						initBuffers();
-						break;
-					}
-					default:
-					break;
-				}
-			}
 			function degToRad(degrees){
 				return( degrees * Math.PI / 180.0 );
 			}
@@ -211,7 +190,6 @@
 	</head>
 	<body onload="initWebGL()">
 		<script>displayTitle("Ch.07 E.g.3 : Sphère, approximation par surfaces de subdivision", 1,1,1,1,1,1,1);</script>
-		<p>	Utiliser les touches : '-' pour réduire la résolution ; '+' pour l'augmenter ; utiliser la souris pour faire tourner la sphère
 		<canvas id="webgl-canvas" width="500" height="500">
 			HTML5 is not supported
 		</canvas>
