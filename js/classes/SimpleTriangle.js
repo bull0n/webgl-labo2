@@ -31,22 +31,7 @@ class SimpleTriangle
       this.colorsBuffer  = getVertexBufferWithVertices(colors);
       this.indicesBuffer  = getIndexBufferWithIndices(indices);
    }
-
-   getVerticesBuffer()
-   {
-      return this.verticesBuffer;
-   }
-
-   getColorsBuffer()
-   {
-      return this.colorsBuffer;
-   }
-
-   getIndicesBuffer()
-   {
-      return this.indicesBuffer;
-   }
-
+   
    // To call inside initShaderParameters
    setupShader(prg)
    {
