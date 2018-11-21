@@ -13,6 +13,7 @@ class Midpoint
       this.size = 5;
    }
 
+   // Create the geometry of the object
    // To call inside initBuffer
    createGeometry()
    {
@@ -24,6 +25,7 @@ class Midpoint
       this.indicesBuffer  = getIndexBufferWithIndices(this.indices);
    }
 
+   // Execute the midpoint algo.
    executeMidpoint()
    {
       let vertices = this.vertices;
@@ -49,6 +51,7 @@ class Midpoint
       indices.push(indices.length);
    }
 
+   // Compute points between two others points (recursively)
    recursiveCompute(a, b, limit)
    {
       let ax = a[0];
@@ -70,41 +73,11 @@ class Midpoint
       }
    }
 
+   // Compute Y for midpoint algo.
    computeY(a, b)
    {
       let sign = Math.random() < 0.5 ? -1.0: 1.0;
       return sign * Math.abs(a[1] - b[1]) / 2.0;
-   }
-
-/*
-   computeRecursive(a, b, limit)
-   {
-      let ax = a[0];
-      let bx = b[0];
-      let cx = bx - ax;
-
-      if(cx > limit)
-      {
-         let mid = a[0] + cx/2.0;
-         this.computeRecursive(ax, mid, limit);
-         this.computeRecursive(mid, bx, limit);
-      }
-   }
-*/
-
-   getVerticesBuffer()
-   {
-      return this.verticesBuffer;
-   }
-
-   getColorsBuffer()
-   {
-      return this.colorsBuffer;
-   }
-
-   getIndicesBuffer()
-   {
-      return this.indicesBuffer;
    }
 
    // To call inside initShaderParameters
