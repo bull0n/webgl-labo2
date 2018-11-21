@@ -6,6 +6,7 @@
 		<script src="js/commonFunctions.js"></script>
 		<script src="js/gl-matrix-min.js"></script>
 		<script src="js/webglTools.js"></script>
+		<script src="sphere.js"></script>
 		<script id="shader-vs" type="x-shader/x-vertex">
 			attribute vec3 aVertexPosition;
 			attribute vec4 aColor;
@@ -27,11 +28,11 @@
 			void main(void) {
 		   		gl_FragColor = vColor;
 			}
-		</script>
+		</script>	
 		<script>
 			var vertexColor = [];
 			vertexColor.push(0.3, 0.3, 0.3, 1.0);
-			var sphereDivisions = 2;
+			var sphereDivisions = 3;
 			var rotY = 0;
 			var rotX = 0;
 			var vertexBuffer = null;
@@ -44,26 +45,30 @@
 			var mvMatrix = mat4.create();
 			var pMatrix = mat4.create();
 			var perspective = true;
-			function degToRad(degrees){
+
+			function degToRad(degrees) {
 				return( degrees * Math.PI / 180.0 );
 			}
+
 			function initShaderParameters(prg){
 				prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aVertexPosition");
 			    glContext.enableVertexAttribArray(prg.vertexPositionAttribute);
-			    prg.colorAttribute 			= glContext.getAttribLocation(prg, "aColor");
+			    prg.colorAttribute = glContext.getAttribLocation(prg, "aColor");
 			    glContext.enableVertexAttribArray(prg.colorAttribute);
-			    prg.pMatrixUniform          = glContext.getUniformLocation(prg, 'uPMatrix');
-			    prg.mvMatrixUniform         = glContext.getUniformLocation(prg, 'uMVMatrix');
+			    prg.pMatrixUniform = glContext.getUniformLocation(prg, 'uPMatrix');
+			    prg.mvMatrixUniform = glContext.getUniformLocation(prg, 'uMVMatrix');
 			}
-			function Normalize(v){
-			  var d = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-			  if (d!=0.0){
-				  v[0]/=d;
-				  v[1]/=d;
-				  v[2]/=d;
-			  }
-			  return v;
+
+			function Normalize(v) {
+				var d = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+				if (d!=0.0) {
+					v[0]/=d;
+					v[1]/=d;
+					v[2]/=d;
+				}
+			  	return v;
 			}
+
 			function fromOneToFourTriangles(v1, v2, v3, depth){
 				var v12 = [];   var v23 = [];   var v31 = [];   var i;
 				if (depth == 0) {
@@ -73,6 +78,7 @@
 					colors.push( vertexColor[0], vertexColor[1], vertexColor[2], vertexColor[3] );
 					vertices.push( v3[0], v3[1], v3[2] );
 					colors.push( vertexColor[0], vertexColor[1], vertexColor[2], vertexColor[3] );
+
 					indices.push( indexCnt, indexCnt+1, indexCnt+1, indexCnt+2, indexCnt+2, indexCnt );
 					indexCnt += 3;
 				}else{
@@ -84,20 +90,23 @@
 					v12 = Normalize(v12);
 					v23 = Normalize(v23);
 					v31 = Normalize(v31);
+
 					fromOneToFourTriangles(  v1, v12, v31, depth-1);
 					fromOneToFourTriangles(  v2, v23, v12, depth-1);
 					fromOneToFourTriangles(  v3, v31, v23, depth-1);
 					fromOneToFourTriangles( v12, v23, v31, depth-1);
 				}
 			}
+
 			function initBuffers(){
 				indices = [];
 				vertices = [];
 				colors = [];
-				console.log("drawing with "+sphereDivisions+" subdivisions");
-				indexCnt = 0;
-				var X = 0.525731112119133696;
+				//console.log("drawing with "+sphereDivisions+" subdivisions");
+				//indexCnt = 0;
+				/*var X = 0.525731112119133696;
 				var Z = 0.850650808352039932;
+
 				var icosahedronvertex = [];
 				icosahedronvertex.push(-X, 0.0, Z);
 				icosahedronvertex.push(X, 0.0, Z);
@@ -111,6 +120,7 @@
 				icosahedronvertex.push(-Z, X, 0.0);
 				icosahedronvertex.push(Z, -X, 0.0);
 				icosahedronvertex.push(-Z, -X, 0.0);
+
 				var icosahedrontriangle = [];
 				icosahedrontriangle.push(1,4,0);
 				icosahedrontriangle.push(4,9,0);
@@ -132,7 +142,9 @@
 				icosahedrontriangle.push(2,11,9);
 				icosahedrontriangle.push(5,2,9);
 				icosahedrontriangle.push(11,2,7);
-				for (i = 0; i < icosahedrontriangle.length; i+=3){
+				*/
+
+				/*for (i = 0; i < icosahedrontriangle.length; i+=3){
 					var v1 = [];
 					var v2 = [];
 					var v3 = [];
@@ -149,13 +161,26 @@
 							icosahedronvertex[vertexIndexStart + 1],
 							icosahedronvertex[vertexIndexStart + 2]);
 				    fromOneToFourTriangles(v1, v2, v3, sphereDivisions);
-				}
+				}*/
+
+				var sph = new Sphere(0.0, 0.0, 0.0);
+				//console.log(sph.vertices);
+				Object.assign(vertices, sph.vertices);
+				//vertices = sph.vertices.slice(0);
+				//console.log("vertices: ");
+				//console.log(vertices);
+				//console.log(sph.indices);
+				Object.assign(indices, sph.indices);
+				//console.log("indices: ");
+				//console.log(indices);
+				
 				vertexBuffer = getVertexBufferWithVertices(vertices);
 				indexBuffer = getIndexBufferWithIndices(indices);
 				colorBuffer = getVertexBufferWithVertices(colors);
 				console.log('Coord: ' + vertices.length + ', ' + 'Indices: ' + indices.length + ', ' + 'ColorRGB: ' + colors.length);
 			}
-			function cameraFct(){
+
+			function cameraFct() {
 				translationMat = mat4.create();
 				mat4.identity(translationMat);
 				mat4.perspective(pMatrix, degToRad(30.0), c_width / c_height, 0.1, 1000.0);
@@ -167,7 +192,8 @@
 				glContext.uniformMatrix4fv(prg.pMatrixUniform, false, pMatrix);
 				glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mat4.multiply(mat4.create(), translationMat, mvMatrix));
 			}
-			function drawScene(){
+
+			function drawScene() {
 				glContext.clearColor(0.9, 0.9, 1.0, 1.0);
 				glContext.enable(glContext.DEPTH_TEST);
 				glContext.clear(glContext.COLOR_BUFFER_BIT | glContext.DEPTH_BUFFER_BIT);
@@ -180,6 +206,7 @@
 				glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, indexBuffer);
 				glContext.drawElements(glContext.LINES, indices.length, glContext.UNSIGNED_SHORT,0);
 			}
+
 			function initWebGL(){
 				glContext = getGLContext('webgl-canvas');
 				initProgram();
