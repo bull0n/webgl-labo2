@@ -11,8 +11,11 @@ class Sphere {
         this.indexCnt = 0;
         this.vertices = [];
         this.icosahedron_vertex();
-        this.indices = [];
+        this.triangles = [];
         this.icosahedron_triangle();
+
+        //implémenter la boucle for !
+        //implémenter forOneToFourTriangles(...)
     }
 
     icosahedron_vertex() {
@@ -37,26 +40,26 @@ class Sphere {
     }
 
     icosahedron_triangle() {
-        this.indices.push(1,4,0);
-        this.indices.push(4,9,0);
-        this.indices.push(4,5,9);
-        this.indices.push(8,5,4);
-        this.indices.push(1,8,4);
-        this.indices.push(1,10,8);
-        this.indices.push(10,3,8);
-        this.indices.push(8,3,5);
-        this.indices.push(3,2,5);
-        this.indices.push(3,7,2);
-        this.indices.push(3,10,7);
-        this.indices.push(10,6,7);
-        this.indices.push(6,11,7);
-        this.indices.push(6,0,11);
-        this.indices.push(6,1,0);
-        this.indices.push(10,1,6);
-        this.indices.push(11,0,9);
-        this.indices.push(2,11,9);
-        this.indices.push(5,2,9);
-        this.indices.push(11,2,7);
+        this.triangles.push(1,4,0);
+        this.triangles.push(4,9,0);
+        this.triangles.push(4,5,9);
+        this.triangles.push(8,5,4);
+        this.triangles.push(1,8,4);
+        this.triangles.push(1,10,8);
+        this.triangles.push(10,3,8);
+        this.triangles.push(8,3,5);
+        this.triangles.push(3,2,5);
+        this.triangles.push(3,7,2);
+        this.triangles.push(3,10,7);
+        this.triangles.push(10,6,7);
+        this.triangles.push(6,11,7);
+        this.triangles.push(6,0,11);
+        this.triangles.push(6,1,0);
+        this.triangles.push(10,1,6);
+        this.triangles.push(11,0,9);
+        this.triangles.push(2,11,9);
+        this.triangles.push(5,2,9);
+        this.triangles.push(11,2,7);
     }
 
     /*static fromOneToFourTriangles(v1, v2, v3, depth){
