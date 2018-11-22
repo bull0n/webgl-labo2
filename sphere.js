@@ -4,10 +4,8 @@ class Sphere {
     get X() { return 0.525731112119133696; }
     get Z() { return 0.850650808352039932; }
 
-    constructor(center_x, center_y, center_z) {
-        this.center_x = center_x;
-        this.center_y = center_y;
-        this.center_z = center_z;
+    constructor(center) {
+        this.center = center;
         this.indexCnt = 0;
         this.vertex = [];
         this.icosahedron_vertex();
@@ -19,14 +17,14 @@ class Sphere {
         this.vertexColor.push(0.3, 0.3, 0.3, 1.0);
         this.colors =[];
         this.generate_vertex();
+
+        this.translate_to(center);
     }
 
     icosahedron_vertex() {
-        //console.log(this.X);
-        //console.log(this.center_x);
-        var x = this.center_x + this.X;
-        var y = this.center_y;
-        var z = this.center_y + this.Z;
+        var x = this.X;
+        var y = 0;
+        var z = this.Z;
 
         this.vertex.push(-x, y, z);
         this.vertex.push(x, y, z);
@@ -124,5 +122,15 @@ class Sphere {
             v[2]/=d;
         }
         return v;
+    }
+
+    translate_to(v) {
+        var i;
+        console.log(this.vertices.length);
+        for(i=0; i < this.vertices.length; i+=3) {
+            this.vertices[i] += v[0];
+            this.vertices[i+1] += v[1];
+            this.vertices[i+2] += v[2];
+        }
     }
 }
