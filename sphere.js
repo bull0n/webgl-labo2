@@ -16,7 +16,7 @@ class Sphere {
      * @param {*} subdivision times the sphere will be precise
      */
     constructor(center, size_ration, subdivision) {
-        this.center = center;
+        this.center = Object.assign({},center);
         this.size_ration = size_ration || 1;
         this.subdivision = subdivision || 0;
 
@@ -29,10 +29,9 @@ class Sphere {
         this.vertexColor.push(0.3, 0.3, 0.3, 1.0);
         this.colors =[];
 
-        this.icosahedron_vertex();
-        this.icosahedron_triangle();
-        this.generate_vertex();
-        this.translate_to(center);
+        this.verticesBuffer = null;
+        this.colorsBuffer = null;
+        this.indicesBuffer = null;
     }
 
     /**
@@ -172,41 +171,37 @@ class Sphere {
         }
     }
 
-    /**
-     * Get all the vertices of multiple spheres in one unique array
-     * @param {Array<Sphere>} spheres 
-     */
-    static getAllVertices(spheres) {
-        let all_vertices = [];
-        spheres.forEach(sph => {
-            all_vertices = all_vertices.concat(sph.vertices);
-        });
-        return all_vertices;
+    create_geometry() {
+        this.icosahedron_vertex();
+        this.icosahedron_triangle();
+        this.generate_vertex();
+        this.translate_to(this.center);
+
+        this.verticesBuffer = getVertexBufferWithVertices(this.vertices);
+        this.colorsBuffer  = getVertexBufferWithVertices(this.colors);
+        this.indicesBuffer  = getIndexBufferWithIndices(this.indices);
     }
 
-    /**
-     * Get all the indices of multiple spheres in one unique array
-     * @param {Array<Sphere>} spheres 
-     */
-    static getAllIndices(spheres) {
-        let all_indices = [];
-        var len = 0;
-        spheres.forEach(sph => {
-            all_indices = all_indices.concat(sph.indices.map(x => x + len));
-            len += sph.vertices.length;
-        });
-        return all_indices;
+    setupShader(prg)
+    {
+        this.prg = prg;
+
+        prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aPoint");
+        glContext.enableVertexAttribArray(prg.vertexPositionAttribute);
+        prg.colorAttribute = glContext.getAttribLocation(prg, "aPointColor");
+        glContext.enableVertexAttribArray(prg.colorAttribute);
     }
 
-    /**
-     * Get all the colors of multiple spheres in one unique array
-     * @param {Array<Sphere>} spheres 
-     */
-    static getAllColors(spheres) {
-        let all_colors = [];
-        spheres.forEach(sph => {
-            all_colors = all_colors.concat(sph.colors);
-        });
-        return all_colors;
+    render()
+    {
+        let prg = this.prg;
+        let indices = this.indices;
+
+        glContext.bindBuffer(glContext.ARRAY_BUFFER, this.verticesBuffer);
+        glContext.vertexAttribPointer(prg.vertexPositionAttribute, 3, glContext.FLOAT, false, 0, 0);
+        glContext.bindBuffer(glContext.ARRAY_BUFFER, this.colorsBuffer);
+        glContext.vertexAttribPointer(prg.colorAttribute, 4, glContext.FLOAT, false, 0, 0);
+        glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+        glContext.drawElements(glContext.LINES, indices.length, glContext.UNSIGNED_SHORT,0);
     }
 }

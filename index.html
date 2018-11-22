@@ -30,11 +30,13 @@
 			}
 		</script>	
 		<script>
+			var sph1 = new Sphere([0.0, 0.0, 0.0]);
+
 			var rotY = 0;
 			var rotX = 0;
-			var vertexBuffer = null;
-			var indexBuffer = null;
-			var colorBuffer = null;
+			//var vertexBuffer = null;
+			//var indexBuffer = null;
+			//var colorBuffer = null;
 			var indices = [];
 			var vertices = [];
 			var colors = [];
@@ -47,12 +49,14 @@
 			}
 
 			function initShaderParameters(prg){
-				prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aVertexPosition");
-			    glContext.enableVertexAttribArray(prg.vertexPositionAttribute);
-			    prg.colorAttribute = glContext.getAttribLocation(prg, "aColor");
-			    glContext.enableVertexAttribArray(prg.colorAttribute);
+				//prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aVertexPosition");
+			    //glContext.enableVertexAttribArray(prg.vertexPositionAttribute);
+			    //prg.colorAttribute = glContext.getAttribLocation(prg, "aColor");
+			    //glContext.enableVertexAttribArray(prg.colorAttribute);
 			    prg.pMatrixUniform = glContext.getUniformLocation(prg, 'uPMatrix');
-			    prg.mvMatrixUniform = glContext.getUniformLocation(prg, 'uMVMatrix');
+				prg.mvMatrixUniform = glContext.getUniformLocation(prg, 'uMVMatrix');
+				
+				sph1.setupShader(prg);
 			}
 
 			function initBuffers(){
@@ -60,20 +64,23 @@
 				vertices = [];
 				colors = [];
 
-				var sph1 = new Sphere([0.0, 0.0, 0.0]);
+				//var sph1 = new Sphere([0.0, 0.0, 0.0]);
 				//var sph2 = new Sphere([1.0, 0.0, 0.0]);
-
-				Object.assign(vertices, sph1.vertices);
-				Object.assign(indices, sph1.indices);
-				Object.assign(colors, sph1.colors);
-				//Object.assign(vertices, Sphere.getAllVertices([sph1, sph2]));
-				//Object.assign(indices, Sphere.getAllIndices([sph1, sph2]));
-				//Object.assign(colors, Sphere.getAllColors([sph1, sph2]));
 				
-				vertexBuffer = getVertexBufferWithVertices(vertices);
-				indexBuffer = getIndexBufferWithIndices(indices);
-				colorBuffer = getVertexBufferWithVertices(colors);
-				console.log('Coord: ' + vertices.length + ', ' + 'Indices: ' + indices.length + ', ' + 'ColorRGB: ' + colors.length);
+
+				//Object.assign(vertices, sph1.vertices);
+				//Object.assign(indices, sph1.indices);
+				//Object.assign(colors, sph1.colors);
+				////Object.assign(vertices, Sphere.getAllVertices([sph1, sph2]));
+				////Object.assign(indices, Sphere.getAllIndices([sph1, sph2]));
+				////Object.assign(colors, Sphere.getAllColors([sph1, sph2]));
+				//
+				//vertexBuffer = getVertexBufferWithVertices(vertices);
+				//indexBuffer = getIndexBufferWithIndices(indices);
+				//colorBuffer = getVertexBufferWithVertices(colors);
+				//console.log('Coord: ' + vertices.length + ', ' + 'Indices: ' + indices.length + ', ' + 'ColorRGB: ' + colors.length);
+				
+				sph1.create_geometry();
 			}
 
 			function cameraFct() {
@@ -95,12 +102,13 @@
 				glContext.clear(glContext.COLOR_BUFFER_BIT | glContext.DEPTH_BUFFER_BIT);
 				glContext.viewport(0, 0, c_width, c_height);
 				cameraFct();
-				glContext.bindBuffer(glContext.ARRAY_BUFFER, vertexBuffer);
-				glContext.vertexAttribPointer(prg.vertexPositionAttribute, 3, glContext.FLOAT, false, 0, 0);
-				glContext.bindBuffer(glContext.ARRAY_BUFFER, colorBuffer);
-				glContext.vertexAttribPointer(prg.colorAttribute, 4, glContext.FLOAT, false, 0, 0);
-				glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, indexBuffer);
-				glContext.drawElements(glContext.LINES, indices.length, glContext.UNSIGNED_SHORT,0);
+				//glContext.bindBuffer(glContext.ARRAY_BUFFER, vertexBuffer);
+				//glContext.vertexAttribPointer(prg.vertexPositionAttribute, 3, glContext.FLOAT, false, 0, 0);
+				//glContext.bindBuffer(glContext.ARRAY_BUFFER, colorBuffer);
+				//glContext.vertexAttribPointer(prg.colorAttribute, 4, glContext.FLOAT, false, 0, 0);
+				//glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, indexBuffer);
+				//glContext.drawElements(glContext.LINES, indices.length, glContext.UNSIGNED_SHORT,0);
+				sph1.render();
 			}
 
 			function initWebGL(){
