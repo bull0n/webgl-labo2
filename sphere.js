@@ -1,11 +1,24 @@
+
+
+
+/**
+ * Class Sphere
+ * Reprensente a sphere using subdivision for WebGL.
+ */
 class Sphere {
-    get subdivision() { return 1; }
     get X() { return 0.525731112119133696; }
     get Z() { return 0.850650808352039932; }
 
-    constructor(center, size_ration) {
+    /**
+     * Constructor of a sphere
+     * @param {*} center where the sphere is placed. Default value: [0.0, 0.0, 0.0]
+     * @param {*} size_ration size ratio of the sphere. Default value: 1
+     * @param {*} subdivision times the sphere will be precise
+     */
+    constructor(center, size_ration, subdivision) {
         this.center = center;
-        this.size_ration = size_ration || 0.5;
+        this.size_ration = size_ration || 1;
+        this.subdivision = subdivision || 0;
 
         this.indexCnt = 0;
         this.vertex = [];
@@ -22,9 +35,11 @@ class Sphere {
         this.translate_to(center);
     }
 
+    /**
+     * Push the points of the icosahedron
+     */
     icosahedron_vertex() {
         var x = this.X * this.size_ration;
-        //var y = 0;
         var z = this.Z * this.size_ration;
 
         this.vertex.push(-x, 0.0, z);
@@ -41,6 +56,9 @@ class Sphere {
         this.vertex.push(-z, -x, 0.0);
     }
 
+    /**
+     * Construct the triangles using the indicies of the icosahedron
+     */
     icosahedron_triangle() {
         this.triangles.push(1,4,0);
         this.triangles.push(4,9,0);
@@ -64,6 +82,9 @@ class Sphere {
         this.triangles.push(11,2,7);
     }
 
+    /**
+     * Generate all vertex and indices with subdivision
+     */
     generate_vertex() {
         var i;
         for (i = 0; i < this.triangles.length; i+=3){
@@ -86,6 +107,14 @@ class Sphere {
         }
     }
 
+    /**
+     * Subdivise a triangle in four smaller triangles and recursivliy
+     * @param {Sphere} sphere 
+     * @param {*} v1 Vertex v1
+     * @param {*} v2 Vertex v2
+     * @param {*} v3 Vertex v3
+     * @param {*} depth remaining subdivisons step
+     */
     static fromOneToFourTriangles(sphere, v1, v2, v3, depth) {
         var v12 = [];   var v23 = [];   var v31 = [];   var i;
         if(depth == 0) {
@@ -115,6 +144,11 @@ class Sphere {
         }
     }
 
+    /**
+     * Normalize a vector using the size ratio of a sphere
+     * @param {*} v Vector to normalize
+     * @param {*} size_ration size ratio of the sphere
+     */
     static normalize(v, size_ration) {
         var d = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
         if (d!=0.0) {
@@ -125,6 +159,10 @@ class Sphere {
         return v;
     }
 
+    /**
+     * Diplace the sphere to a destination point.
+     * @param {*} v Destination vertex as array with 3 components
+     */
     translate_to(v) {
         var i;
         for(i=0; i < this.vertices.length; i+=3) {
@@ -134,6 +172,10 @@ class Sphere {
         }
     }
 
+    /**
+     * Get all the vertices of multiple spheres in one unique array
+     * @param {Array<Sphere>} spheres 
+     */
     static getAllVertices(spheres) {
         let all_vertices = [];
         spheres.forEach(sph => {
@@ -142,6 +184,10 @@ class Sphere {
         return all_vertices;
     }
 
+    /**
+     * Get all the indices of multiple spheres in one unique array
+     * @param {Array<Sphere>} spheres 
+     */
     static getAllIndices(spheres) {
         let all_indices = [];
         var len = 0;
@@ -152,6 +198,10 @@ class Sphere {
         return all_indices;
     }
 
+    /**
+     * Get all the colors of multiple spheres in one unique array
+     * @param {Array<Sphere>} spheres 
+     */
     static getAllColors(spheres) {
         let all_colors = [];
         spheres.forEach(sph => {
