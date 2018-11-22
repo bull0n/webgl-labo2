@@ -126,11 +126,36 @@ class Sphere {
 
     translate_to(v) {
         var i;
-        console.log(this.vertices.length);
         for(i=0; i < this.vertices.length; i+=3) {
             this.vertices[i] += v[0];
             this.vertices[i+1] += v[1];
             this.vertices[i+2] += v[2];
         }
+    }
+
+    static getAllVertices(spheres) {
+        let all_vertices = [];
+        spheres.forEach(sph => {
+            all_vertices = all_vertices.concat(sph.vertices);
+        });
+        return all_vertices;
+    }
+
+    static getAllIndices(spheres) {
+        let all_indices = [];
+        var len = 0;
+        spheres.forEach(sph => {
+            all_indices = all_indices.concat(sph.indices.map(x => x + len));
+            len += sph.vertices.length;
+        });
+        return all_indices;
+    }
+
+    static getAllColors(spheres) {
+        let all_colors = [];
+        spheres.forEach(sph => {
+            all_colors = all_colors.concat(sph.colors);
+        });
+        return all_colors;
     }
 }

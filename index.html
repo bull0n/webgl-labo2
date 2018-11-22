@@ -64,11 +64,15 @@
 				vertices = [];
 				colors = [];
 
-				var sph = new Sphere([0.0, 0.0, -1.0]);
+				var sph1 = new Sphere([-1.0, 0.0, 0.0]);
+				var sph2 = new Sphere([1.0, 0.0, 0.0]);
 
-				Object.assign(vertices, sph.vertices);
-				Object.assign(indices, sph.indices);
-				Object.assign(colors, sph.colors);
+				//Object.assign(vertices, sph1.vertices);
+				//Object.assign(indices, sph1.indices);
+				//Object.assign(colors, sph1.colors);
+				Object.assign(vertices, Sphere.getAllVertices([sph1, sph2]));
+				Object.assign(indices, Sphere.getAllIndices([sph1, sph2]));
+				Object.assign(colors, Sphere.getAllColors([sph1, sph2]));
 				
 				vertexBuffer = getVertexBufferWithVertices(vertices);
 				indexBuffer = getIndexBufferWithIndices(indices);
