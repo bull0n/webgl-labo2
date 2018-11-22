@@ -30,9 +30,6 @@
 			}
 		</script>	
 		<script>
-			var vertexColor = [];
-			vertexColor.push(0.3, 0.3, 0.3, 1.0);
-			var sphereDivisions = 3;
 			var rotY = 0;
 			var rotX = 0;
 			var vertexBuffer = null;
@@ -41,7 +38,6 @@
 			var indices = [];
 			var vertices = [];
 			var colors = [];
-			var indexCnt = 0;
 			var mvMatrix = mat4.create();
 			var pMatrix = mat4.create();
 			var perspective = true;
@@ -64,15 +60,15 @@
 				vertices = [];
 				colors = [];
 
-				var sph1 = new Sphere([-1.0, 0.0, 0.0]);
+				var sph1 = new Sphere([0.0, 0.0, 0.0], 1.2);
 				var sph2 = new Sphere([1.0, 0.0, 0.0]);
 
-				//Object.assign(vertices, sph1.vertices);
-				//Object.assign(indices, sph1.indices);
-				//Object.assign(colors, sph1.colors);
-				Object.assign(vertices, Sphere.getAllVertices([sph1, sph2]));
-				Object.assign(indices, Sphere.getAllIndices([sph1, sph2]));
-				Object.assign(colors, Sphere.getAllColors([sph1, sph2]));
+				Object.assign(vertices, sph1.vertices);
+				Object.assign(indices, sph1.indices);
+				Object.assign(colors, sph1.colors);
+				//Object.assign(vertices, Sphere.getAllVertices([sph1, sph2]));
+				//Object.assign(indices, Sphere.getAllIndices([sph1, sph2]));
+				//Object.assign(colors, Sphere.getAllColors([sph1, sph2]));
 				
 				vertexBuffer = getVertexBufferWithVertices(vertices);
 				indexBuffer = getIndexBufferWithIndices(indices);

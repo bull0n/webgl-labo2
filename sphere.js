@@ -1,43 +1,44 @@
 class Sphere {
-    get rayon() { return 3; }
-    get subdivision() { return 2; }
+    get subdivision() { return 1; }
     get X() { return 0.525731112119133696; }
     get Z() { return 0.850650808352039932; }
 
-    constructor(center) {
+    constructor(center, size_ration) {
         this.center = center;
+        this.size_ration = size_ration || 0.5;
+
         this.indexCnt = 0;
         this.vertex = [];
-        this.icosahedron_vertex();
         this.triangles = [];
-        this.icosahedron_triangle();
         this.vertices = [];
         this.indices = [];
         this.vertexColor = [];
         this.vertexColor.push(0.3, 0.3, 0.3, 1.0);
         this.colors =[];
-        this.generate_vertex();
 
+        this.icosahedron_vertex();
+        this.icosahedron_triangle();
+        this.generate_vertex();
         this.translate_to(center);
     }
 
     icosahedron_vertex() {
-        var x = this.X;
-        var y = 0;
-        var z = this.Z;
+        var x = this.X * this.size_ration;
+        //var y = 0;
+        var z = this.Z * this.size_ration;
 
-        this.vertex.push(-x, y, z);
-        this.vertex.push(x, y, z);
-        this.vertex.push(-x, y, -z);
-        this.vertex.push(x, y, -z);
-        this.vertex.push(y, z, x);
-        this.vertex.push(y, z, -x);
-        this.vertex.push(y, -z, x);
-        this.vertex.push(y, -z, -x);
-        this.vertex.push(z, x, y);
-        this.vertex.push(-z, x, y);
-        this.vertex.push(z, -x, y);
-        this.vertex.push(-z, -x, y);
+        this.vertex.push(-x, 0.0, z);
+        this.vertex.push(x, 0.0, z);
+        this.vertex.push(-x, 0.0, -z);
+        this.vertex.push(x, 0.0, -z);
+        this.vertex.push(0.0, z, x);
+        this.vertex.push(0.0, z, -x);
+        this.vertex.push(0.0, -z, x);
+        this.vertex.push(0.0, -z, -x);
+        this.vertex.push(z, x, 0.0);
+        this.vertex.push(-z, x, 0.0);
+        this.vertex.push(z, -x, 0.0);
+        this.vertex.push(-z, -x, 0.0);
     }
 
     icosahedron_triangle() {
@@ -103,9 +104,9 @@ class Sphere {
                 v23.push( (v2[i]+v3[i])/2.0 );
                 v31.push( (v3[i]+v1[i])/2.0 );
             }
-            v12 = Sphere.normalize(v12);
-            v23 = Sphere.normalize(v23);
-            v31 = Sphere.normalize(v31);
+            v12 = Sphere.normalize(v12, sphere.size_ration);
+            v23 = Sphere.normalize(v23, sphere.size_ration);
+            v31 = Sphere.normalize(v31, sphere.size_ration);
 
             Sphere.fromOneToFourTriangles(sphere, v1, v12, v31, depth-1);
             Sphere.fromOneToFourTriangles(sphere, v2, v23, v12, depth-1);
@@ -114,12 +115,12 @@ class Sphere {
         }
     }
 
-    static normalize(v) {
+    static normalize(v, size_ration) {
         var d = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
         if (d!=0.0) {
-            v[0]/=d;
-            v[1]/=d;
-            v[2]/=d;
+            v[0]/=d / size_ration;
+            v[1]/=d / size_ration;
+            v[2]/=d / size_ration;
         }
         return v;
     }
