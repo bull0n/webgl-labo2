@@ -9,13 +9,16 @@ class Sphere {
         this.center_y = center_y;
         this.center_z = center_z;
         this.indexCnt = 0;
-        this.vertices = [];
+        this.vertex = [];
         this.icosahedron_vertex();
         this.triangles = [];
         this.icosahedron_triangle();
-
-        //implémenter la boucle for !
-        //implémenter forOneToFourTriangles(...)
+        this.vertices = [];
+        this.indices = [];
+        this.vertexColor = [];
+        this.vertexColor.push(0.3, 0.3, 0.3, 1.0);
+        this.colors =[];
+        this.generate_vertex();
     }
 
     icosahedron_vertex() {
@@ -25,18 +28,18 @@ class Sphere {
         var y = this.center_y;
         var z = this.center_y + this.Z;
 
-        this.vertices.push(-x, y, z);
-        this.vertices.push(x, y, z);
-        this.vertices.push(-x, y, -z);
-        this.vertices.push(x, y, -z);
-        this.vertices.push(y, z, x);
-        this.vertices.push(y, z, -x);
-        this.vertices.push(y, -z, x);
-        this.vertices.push(y, -z, -x);
-        this.vertices.push(z, x, y);
-        this.vertices.push(-z, x, y);
-        this.vertices.push(z, -x, y);
-        this.vertices.push(-z, -x, y);
+        this.vertex.push(-x, y, z);
+        this.vertex.push(x, y, z);
+        this.vertex.push(-x, y, -z);
+        this.vertex.push(x, y, -z);
+        this.vertex.push(y, z, x);
+        this.vertex.push(y, z, -x);
+        this.vertex.push(y, -z, x);
+        this.vertex.push(y, -z, -x);
+        this.vertex.push(z, x, y);
+        this.vertex.push(-z, x, y);
+        this.vertex.push(z, -x, y);
+        this.vertex.push(-z, -x, y);
     }
 
     icosahedron_triangle() {
@@ -62,33 +65,64 @@ class Sphere {
         this.triangles.push(11,2,7);
     }
 
-    /*static fromOneToFourTriangles(v1, v2, v3, depth){
+    generate_vertex() {
+        var i;
+        for (i = 0; i < this.triangles.length; i+=3){
+            var v1 = [];
+            var v2 = [];
+            var v3 = [];
+            var vertexIndexStart = this.triangles[i] * 3;
+            v1.push(this.vertex[vertexIndexStart],
+                this.vertex[vertexIndexStart + 1],
+                this.vertex[vertexIndexStart + 2]);
+            vertexIndexStart = this.triangles[i+1] * 3;
+            v2.push(this.vertex[vertexIndexStart],
+                this.vertex[vertexIndexStart + 1],
+                this.vertex[vertexIndexStart + 2]);
+            vertexIndexStart = this.triangles[i+2] * 3;
+            v3.push(this.vertex[vertexIndexStart],
+                this.vertex[vertexIndexStart + 1],
+                this.vertex[vertexIndexStart + 2]);
+            Sphere.fromOneToFourTriangles(this, v1, v2, v3, this.subdivision);
+        }
+    }
+
+    static fromOneToFourTriangles(sphere, v1, v2, v3, depth) {
         var v12 = [];   var v23 = [];   var v31 = [];   var i;
-
-        if (depth == 0) {
-            this.vertices.push( v1[0], v1[1], v1[2] );
-            colors.push( vertexColor[0], vertexColor[1], vertexColor[2], vertexColor[3] );
-            vertices.push( v2[0], v2[1], v2[2] );
-            colors.push( vertexColor[0], vertexColor[1], vertexColor[2], vertexColor[3] );
-            vertices.push( v3[0], v3[1], v3[2] );
-            colors.push( vertexColor[0], vertexColor[1], vertexColor[2], vertexColor[3] );
-
-            indices.push( indexCnt, indexCnt+1, indexCnt+1, indexCnt+2, indexCnt+2, indexCnt );
-            indexCnt += 3;
-        }else{
+        if(depth == 0) {
+            sphere.vertices.push(v1[0], v1[1], v1[2]);
+            sphere.colors.push(sphere.vertexColor[0], sphere.vertexColor[1], sphere.vertexColor[2], sphere.vertexColor[3]);
+            sphere.vertices.push(v2[0], v2[1], v2[2]);
+            sphere.colors.push(sphere.vertexColor[0], sphere.vertexColor[1], sphere.vertexColor[2], sphere.vertexColor[3]);
+            sphere.vertices.push(v3[0], v3[1], v3[2]);
+            sphere.colors.push(sphere.vertexColor[0], sphere.vertexColor[1], sphere.vertexColor[2], sphere.vertexColor[3]);
+        
+            sphere.indices.push(sphere.indexCnt, sphere.indexCnt+1, sphere.indexCnt+1, sphere.indexCnt+2, sphere.indexCnt+2, sphere.indexCnt);
+            sphere.indexCnt += 3;
+        } else {
             for (i = 0; i < 3; i++) {
                 v12.push( (v1[i]+v2[i])/2.0 );
                 v23.push( (v2[i]+v3[i])/2.0 );
                 v31.push( (v3[i]+v1[i])/2.0 );
             }
-            v12 = Normalize(v12);
-            v23 = Normalize(v23);
-            v31 = Normalize(v31);
+            v12 = Sphere.normalize(v12);
+            v23 = Sphere.normalize(v23);
+            v31 = Sphere.normalize(v31);
 
-            fromOneToFourTriangles(  v1, v12, v31, depth-1);
-            fromOneToFourTriangles(  v2, v23, v12, depth-1);
-            fromOneToFourTriangles(  v3, v31, v23, depth-1);
-            fromOneToFourTriangles( v12, v23, v31, depth-1);
+            Sphere.fromOneToFourTriangles(sphere, v1, v12, v31, depth-1);
+            Sphere.fromOneToFourTriangles(sphere, v2, v23, v12, depth-1);
+            Sphere.fromOneToFourTriangles(sphere, v3, v31, v23, depth-1);
+            Sphere.fromOneToFourTriangles(sphere, v12, v23, v31, depth-1);
         }
-    }*/
+    }
+
+    static normalize(v) {
+        var d = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+        if (d!=0.0) {
+            v[0]/=d;
+            v[1]/=d;
+            v[2]/=d;
+        }
+        return v;
+    }
 }

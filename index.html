@@ -59,7 +59,7 @@
 			    prg.mvMatrixUniform = glContext.getUniformLocation(prg, 'uMVMatrix');
 			}
 
-			function Normalize(v) {
+			/*function Normalize(v) {
 				var d = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 				if (d!=0.0) {
 					v[0]/=d;
@@ -96,7 +96,7 @@
 					fromOneToFourTriangles(  v3, v31, v23, depth-1);
 					fromOneToFourTriangles( v12, v23, v31, depth-1);
 				}
-			}
+			}*/
 
 			function initBuffers(){
 				indices = [];
@@ -143,7 +143,7 @@
 				icosahedrontriangle.push(5,2,9);
 				icosahedrontriangle.push(11,2,7);
 
-				for (i = 0; i < icosahedrontriangle.length; i+=3){
+				/*for (i = 0; i < icosahedrontriangle.length; i+=3){
 					var v1 = [];
 					var v2 = [];
 					var v3 = [];
@@ -160,18 +160,19 @@
 							icosahedronvertex[vertexIndexStart + 1],
 							icosahedronvertex[vertexIndexStart + 2]);
 				    fromOneToFourTriangles(v1, v2, v3, 0);
-				}
+				}*/
 
 				var sph = new Sphere(0.0, 0.0, 0.0);
 				//console.log(sph.vertices);
-				//Object.assign(vertices, sph.vertices);
+				Object.assign(vertices, sph.vertices);
 				//vertices = sph.vertices.slice(0);
 				//console.log("vertices: ");
 				//console.log(vertices);
 				//console.log(sph.indices);
-				//Object.assign(indices, sph.indices);
+				Object.assign(indices, sph.indices);
 				//console.log("indices: ");
 				//console.log(indices);
+				Object.assign(colors, sph.colors);
 				
 				vertexBuffer = getVertexBufferWithVertices(vertices);
 				indexBuffer = getIndexBufferWithIndices(indices);
