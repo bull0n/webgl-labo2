@@ -2,8 +2,11 @@
 
 class Midpoint
 {
-   constructor()
+   constructor(a, b)
    {
+      this.a = a;
+      this.b = b;
+
       this.vertices = [];
       this.colors = [];
       this.indices = [];
@@ -33,8 +36,8 @@ class Midpoint
       let indices = this.indices;
 
       // Prapare point A and point B of the segment
-      let a = [-1.0, 0.0, -3.0];
-      let b = [+1.0, +0.5, -3.0];
+      let a = this.a;
+      let b = this.b;
       let limit = 0.05;
 
       // Add the point A to the vertices (first to set in the list)
@@ -56,7 +59,7 @@ class Midpoint
    {
       let ax = a[0];
       let bx = b[0];
-      let distance = (bx - ax) / 2.0;
+      let distance = Math.abs(bx - ax) / 2.0;
 
       if(distance >= limit)
       {
