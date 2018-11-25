@@ -10,7 +10,7 @@ class Midpoint
    // bx: position of B on X axis
    // displacement: value of displacement
    // smooth: smoothness of the midpoint algo.
-   // limit: min. value to reach with the recursive algo.
+   // limit: min. value to reach with the recursive algo. (distance between two points min.)
    // depth: depth of all the points (Z Axis)
    constructor(ax, bx, h, displacement, smooth = 1.0, limit = 0.05, depth = -3.0)
    {
