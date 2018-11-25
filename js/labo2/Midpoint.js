@@ -6,11 +6,15 @@ const Z = 2;
 
 class Midpoint
 {
-   constructor(a, b, displacement)
+   constructor(ax, bx, h, displacement, smooth = 1.0, limit = 0.05, depth = -3.0)
    {
-      this.a = a;
-      this.b = b;
+      this.ax = ax;
+      this.bx = bx;
+      this.h = h;
       this.displacement = displacement;
+      this.smooth = smooth;
+      this.limit = limit;
+      this.depth = depth;
 
       this.vertices = [];
       this.colors = [];
@@ -18,7 +22,7 @@ class Midpoint
       this.verticesBuffer = null;
       this.colorsBuffer = null;
       this.indicesBuffer = null;
-      this.size = 5;
+      this.size = 5;                // Useless, unless we draw points...
    }
 
    // Create the geometry of the object
@@ -41,9 +45,9 @@ class Midpoint
       let indices = this.indices;
 
       // Prapare point A and point B of the segment
-      let a = this.a;
-      let b = this.b;
-      let limit = 0.05;
+      let a = [this.ax, this.initializeY(), this.depth];
+      let b = [this.bx, this.initializeY(), this.depth];
+      let limit = this.limit;
 
       // Add the point A to the vertices (first to set in the list)
       vertices.push(a[0], a[1], a[2]);
@@ -70,15 +74,23 @@ class Midpoint
       {
          let cy = this.computeY(a, b, displacement);
          let c = [ax + distance, cy, a[Z]];
+         let newDisplacement = displacement * 2**(-this.smooth);
 
-         this.recursiveCompute(a, c, displacement * 2**(-1.0), limit);
+         this.recursiveCompute(a, c, newDisplacement, limit);
 
          this.vertices.push(c[X], c[Y], c[Z]);
          this.colors.push(1.0, 0.0, 0.0, 1.0);
          this.indices.push(this.indices.length);
 
-         this.recursiveCompute(c, b, displacement, limit);
+         this.recursiveCompute(c, b, newDisplacement, limit);
       }
+   }
+
+   // Initialize Y for the two points of each side (A and B)
+   initializeY()
+   {
+      let sign = Math.random() < 0.5 ? -1.0: 1.0;
+      return this.h + sign * random(0, this.displacement / 2.0);
    }
 
    // Compute Y for midpoint algo.
