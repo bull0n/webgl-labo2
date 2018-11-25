@@ -76,18 +76,24 @@ class Midpoint
       let bx = b[X];
       let distance = Math.abs(bx - ax) / 2.0;
 
+      // if the distance is still larger than the limit, we continue the recursion (continue the subdivision)
+      // otherwise, the subdivision is over
       if(distance >= limit)
       {
+         // prepare data relative to the new point between A and B
          let cy = this.computeY(a, b, displacement);
          let c = [ax + distance, cy, a[Z]];
          let newDisplacement = displacement * 2**(-this.smooth);
 
+         // execute the recursion between A and the new point (C)
          this.recursiveCompute(a, c, newDisplacement, limit);
 
+         // add the new point in the list
          this.vertices.push(c[X], c[Y], c[Z]);
          this.colors.push(1.0, 0.0, 0.0, 1.0);
-         this.indices.push(this.indices.length);
+         this.indices.push(this.indices.length);   // the vertices are always set in the right order (0,1,2,3,4 ...)
 
+         // execute the recursion between C (new point) and B
          this.recursiveCompute(c, b, newDisplacement, limit);
       }
    }
