@@ -6,8 +6,9 @@
 		<script src="./js/commonFunctions.js"></script>
 		<script src='./js/gl-matrix-min.js'></script>
 		<script src='./js/webglTools.js'></script>
-		<script src='./js/classes/SimpleTriangle.js'></script>
-		<script src='./js/classes/Midpoint.js'></script>
+		<script src='./js/labo2/Tools.js'></script>
+		<script src='./js/labo2/SimpleTriangle.js'></script>
+		<script src='./js/labo2/Midpoint.js'></script>
 		<script id="shader-vs" type="x-shader/x-vertex">
 		uniform mat4 uMVMatrix;
 		uniform mat4 uPMatrix;
@@ -41,7 +42,7 @@
 			var pMatrix = mat4.create();
 
 			var triangle = new SimpleTriangle();
-			var midpoint = new Midpoint([-1.0, 0.5, -3.0], [+1.0, -0.5, -3.0], 0.07);
+			var midpoint = new Midpoint([-1.0, 0.0, -3.0], [+1.0, 0.0, -3.0], 0.3);
 
 			function degToRad(degrees)
 			{
