@@ -15,7 +15,7 @@ class Sphere {
      * @param {*} size_ration size ratio of the sphere. Default value: 1
      * @param {*} subdivision times the sphere will be precise
      */
-    constructor(center, size_ration 1.0, subdivision = 0.0)
+    constructor(center, size_ration = 1.0, subdivision = 0.0)
     {
         this.center = Object.assign({},center);
         this.size_ration = size_ration;
