@@ -53,7 +53,6 @@ class Midpoint
       // Prapare point A and point B of the segment
       let a = [this.ax, this.initializeY(), this.depth];
       let b = [this.bx, this.initializeY(), this.depth];
-      let limit = this.limit;
 
       // Add the point A to the vertices (first to set in the list)
       vertices.push(a[0], a[1], a[2]);
@@ -61,7 +60,7 @@ class Midpoint
       indices.push(this.indices.length);
 
       // Execute midpoint algo. (recursive)
-      this.recursiveCompute(a, b, this.displacement, limit);
+      this.recursiveCompute(a, b, this.displacement);
 
       // Add the point B to the vertices (last to set in the list)
       vertices.push(b[0], b[1], b[2]);
@@ -70,11 +69,12 @@ class Midpoint
    }
 
    // Compute points between two others points (recursively)
-   recursiveCompute(a, b, displacement, limit)
+   recursiveCompute(a, b, displacement)
    {
       let ax = a[X];
       let bx = b[X];
       let distance = Math.abs(bx - ax) / 2.0;
+      let limit = this.limit;
 
       // if the distance is still larger than the limit, we continue the recursion (continue the subdivision)
       // otherwise, the subdivision is over
@@ -86,7 +86,7 @@ class Midpoint
          let newDisplacement = displacement * 2**(-this.smooth);
 
          // execute the recursion between A and the new point (C)
-         this.recursiveCompute(a, c, newDisplacement, limit);
+         this.recursiveCompute(a, c, newDisplacement);
 
          // add the new point in the list
          this.vertices.push(c[X], c[Y], c[Z]);
@@ -94,7 +94,7 @@ class Midpoint
          this.indices.push(this.indices.length);   // the vertices are always set in the right order (0,1,2,3,4 ...)
 
          // execute the recursion between C (new point) and B
-         this.recursiveCompute(c, b, newDisplacement, limit);
+         this.recursiveCompute(c, b, newDisplacement);
       }
    }
 
