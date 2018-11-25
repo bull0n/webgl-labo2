@@ -42,8 +42,15 @@
 			var mvMatrix = mat4.create();
 			var pMatrix = mat4.create();
 
-			var midpoint = new Midpoint(-1.0, +1.0, 0.0, 0.5, 1.0, 0.05, -3.0);
-			var sphere = new Sphere([0,0,-3.0]);
+			var ax = -1.0;
+			var bx = +1.0;
+			var h = 0.0;
+			var displacement = 0.5;
+			var smoothness = 1.0;
+			var limit = 0.02;
+			var depth = -3.0;
+			var midpoint = new Midpoint(ax, bx, h, displacement, smoothness, limit, depth);
+			var sphere = new Sphere([-1.0, 0.0, -3.0], 0.05);
 
 			function degToRad(degrees)
 			{
@@ -79,7 +86,13 @@
 				glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mvMatrix);
 
 				midpoint.render();
-				sphere.render();
+
+				for(let i = 0;i < midpoint.vertices.length; i+=3)
+				{
+					let position = [midpoint.vertices[i], midpoint.vertices[i+1], midpoint.vertices[i+2]]
+					//sphere.translate_to(position);
+					sphere.render();
+				}
 			}
 
 			function initWebGL()
