@@ -6,6 +6,12 @@ const Z = 2;
 
 class Midpoint
 {
+   // ax: position of A on X axis
+   // bx: position of B on X axis
+   // displacement: value of displacement
+   // smooth: smoothness of the midpoint algo.
+   // limit: min. value to reach with the recursive algo.
+   // depth: depth of all the points (Z Axis)
    constructor(ax, bx, h, displacement, smooth = 1.0, limit = 0.05, depth = -3.0)
    {
       this.ax = ax;
@@ -106,9 +112,9 @@ class Midpoint
    {
       this.prg = prg;
 
-      prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aPoint");
+      prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aVertexPosition");
       glContext.enableVertexAttribArray(prg.vertexPositionAttribute);
-      prg.colorAttribute = glContext.getAttribLocation(prg, "aPointColor");
+      prg.colorAttribute = glContext.getAttribLocation(prg, "aVertexColor");
       glContext.enableVertexAttribArray(prg.colorAttribute);
       prg.pointSize = glContext.getUniformLocation(prg, "uPointSize");
    }

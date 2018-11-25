@@ -31,15 +31,15 @@ class SimpleTriangle
       this.colorsBuffer  = getVertexBufferWithVertices(colors);
       this.indicesBuffer  = getIndexBufferWithIndices(indices);
    }
-   
+
    // To call inside initShaderParameters
    setupShader(prg)
    {
       this.prg = prg;
 
-      prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aPoint");
+      prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aVertexPosition");
       glContext.enableVertexAttribArray(prg.vertexPositionAttribute);
-      prg.colorAttribute = glContext.getAttribLocation(prg, "aPointColor");
+      prg.colorAttribute = glContext.getAttribLocation(prg, "aVertexColor");
       glContext.enableVertexAttribArray(prg.colorAttribute);
    }
 

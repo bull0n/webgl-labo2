@@ -194,9 +194,9 @@ class Sphere {
     {
         this.prg = prg;
 
-        prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aPoint");
+        prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aVertexPosition");
         glContext.enableVertexAttribArray(prg.vertexPositionAttribute);
-        prg.colorAttribute = glContext.getAttribLocation(prg, "aPointColor");
+        prg.colorAttribute = glContext.getAttribLocation(prg, "aVertexColor");
         glContext.enableVertexAttribArray(prg.colorAttribute);
     }
 

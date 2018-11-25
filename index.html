@@ -13,29 +13,29 @@
 		<script id="shader-vs" type="x-shader/x-vertex">
 		uniform mat4 uMVMatrix;
 		uniform mat4 uPMatrix;
-		attribute vec3 aPoint;
-		attribute vec4 aPointColor;
+		attribute vec3 aVertexPosition;
+		attribute vec4 aVertexColor;
 		uniform float uPointSize;
 
-		varying vec4 vPointColor;
+		varying vec4 vVertexColor;
 
 		void main(void)
 		{
 			gl_PointSize = uPointSize;
-			gl_Position = uPMatrix * uMVMatrix * vec4(aPoint, 1.0);
+			gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
 
-			vPointColor = aPointColor;
+			vVertexColor = aVertexColor;
 		}
 		</script>
 		<script id="shader-fs" type="x-shader/x-fragment">
 			#ifdef GL_ES
 				precision highp float;
 			#endif
-			varying vec4 vPointColor;
+			varying vec4 vVertexColor;
 
 			void main(void)
 			{
-				gl_FragColor = vPointColor;
+				gl_FragColor = vVertexColor;
 			}
 			</script>
 		<script>
