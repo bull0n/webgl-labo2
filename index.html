@@ -9,6 +9,7 @@
 		<script src='./js/labo2/Tools.js'></script>
 		<script src='./js/labo2/SimpleTriangle.js'></script>
 		<script src='./js/labo2/Midpoint.js'></script>
+		<script src='./js/labo2/Sphere.js'></script>
 		<script id="shader-vs" type="x-shader/x-vertex">
 		uniform mat4 uMVMatrix;
 		uniform mat4 uPMatrix;
@@ -41,8 +42,8 @@
 			var mvMatrix = mat4.create();
 			var pMatrix = mat4.create();
 
-			var triangle = new SimpleTriangle();
 			var midpoint = new Midpoint(-1.0, +1.0, 0.0, 0.5, 1.0, 0.05, -3.0);
+			var sphere = new Sphere([0,0,-3.0]);
 
 			function degToRad(degrees)
 			{
@@ -54,14 +55,14 @@
 				prg.pMatrixUniform = glContext.getUniformLocation(prg, 'uPMatrix');
 				prg.mvMatrixUniform = glContext.getUniformLocation(prg, 'uMVMatrix');
 
-				triangle.setupShader(prg);
 				midpoint.setupShader(prg);
+				sphere.setupShader(prg);
 			}
 
 			function initBuffers()
 			{
-				triangle.createGeometry();
 				midpoint.createGeometry();
+				sphere.createGeometry();
 			}
 
 			function drawScene()
@@ -77,8 +78,8 @@
 				glContext.uniformMatrix4fv(prg.pMatrixUniform, false, pMatrix);
 				glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mvMatrix);
 
-				triangle.render();
 				midpoint.render();
+				sphere.render();
 			}
 
 			function initWebGL()
@@ -91,9 +92,10 @@
 		</script>
 	</head>
 	<body onload="initWebGL()">
-		<script>
-			displayTitle("Labo2 : Jumping Sphere", 1, 1, 1, 1, 1, 1, 1);
-		</script>
-		<canvas id="webgl-canvas" width="500" height="500">HTML5 is not supported</canvas>
+		<script>displayTitle("Ch.07 E.g.3 : Sphère, approximation par surfaces de subdivision", 1,1,1,1,1,1,1);</script>
+		<canvas id="webgl-canvas" width="500" height="500">
+			HTML5 is not supported
+		</canvas>
 	</body>
+	<script src='./js/mouseMotionHandling.js'></script>
 </html>
