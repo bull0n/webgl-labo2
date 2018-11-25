@@ -1,11 +1,16 @@
 // Midpoint
 
+const X = 0;
+const Y = 1;
+const Z = 2;
+
 class Midpoint
 {
-   constructor(a, b)
+   constructor(a, b, displacement)
    {
       this.a = a;
       this.b = b;
+      this.displacement = displacement;
 
       this.vertices = [];
       this.colors = [];
@@ -57,18 +62,19 @@ class Midpoint
    // Compute points between two others points (recursively)
    recursiveCompute(a, b, limit)
    {
-      let ax = a[0];
-      let bx = b[0];
+      let ax = a[X];
+      let bx = b[X];
       let distance = Math.abs(bx - ax) / 2.0;
 
       if(distance >= limit)
       {
          let cy = this.computeY(a, b);
-         let c = [ax + distance, cy, a[2]];
+         let c = [ax + distance, cy, a[Z]];
+         console.log(cy);
 
          this.recursiveCompute(a, c, limit);
 
-         this.vertices.push(c[0], c[1], c[2]);
+         this.vertices.push(c[X], c[Y], c[Z]);
          this.colors.push(1.0, 0.0, 0.0, 1.0);
          this.indices.push(this.indices.length);
 
@@ -80,7 +86,8 @@ class Midpoint
    computeY(a, b)
    {
       let sign = Math.random() < 0.5 ? -1.0: 1.0;
-      return sign * Math.abs(a[1] - b[1]) / 2.0;
+      let averageY = (a[Y] + b[Y]) / 2;
+      return averageY + sign * this.displacement / 2;
    }
 
    // To call inside initShaderParameters
