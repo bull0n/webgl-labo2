@@ -50,7 +50,7 @@
 			var limit = 0.2;
 			var depth = -3.0;
 			var midpoint = new Midpoint(ax, bx, h, displacement, smoothness, limit, depth);
-			var sphere = new Sphere([0.0, 0.0, -3.0], 0.05);
+			var sphere = new Sphere([0.0, 0.0, -3.0], 0.2, 2);
 
 			function degToRad(degrees)
 			{
@@ -74,7 +74,7 @@
 
 			function drawScene()
 			{
-				glContext.clearColor(0.0, 0.0, 0.0, 1.0);
+				glContext.clearColor(0.1, 0.1, 0.1, 1.0);
 				glContext.disable(glContext.DEPTH_TEST);
 				glContext.clear(glContext.COLOR_BUFFER_BIT | glContext.DEPTH_BUFFER_BIT);
 				glContext.viewport(0, 0, c_width, c_height);
@@ -111,7 +111,7 @@
 	</head>
 	<body onload="initWebGL()">
 		<script>displayTitle("WebGL: Labo2", 1,1,1,1,1,1,1);</script>
-		<canvas id="webgl-canvas" width="500" height="500">
+		<canvas id="webgl-canvas" width="1000" height="1000">
 			HTML5 is not supported
 		</canvas>
 

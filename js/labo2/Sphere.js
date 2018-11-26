@@ -27,12 +27,18 @@ class Sphere {
         this.vertices = [];
         this.indices = [];
         this.vertexColor = [];
-        this.vertexColor.push(0.3, 0.3, 0.3, 1.0);
+        this.vertexColor.push(0.7, 0.7, 0.0, 1.0);
+        this.vertexColorNorth = [];
+        this.vertexColorNorth.push(0.7, 0.7, 0.0, 1.0);
+        this.vertexColorSouth = [];
+        this.vertexColorSouth.push(0.7, 0.0, 0.0, 1.0);
         this.colors =[];
+        this.normals = [];
 
         this.verticesBuffer = null;
         this.colorsBuffer = null;
         this.indicesBuffer = null;
+        this.normalsBuffer = null;
     }
 
     /**
@@ -113,21 +119,27 @@ class Sphere {
     /**
      * Subdivise a triangle in four smaller triangles and recursivliy
      * @param {Sphere} sphere
-     * @param {*} v1 Vertex v1
-     * @param {*} v2 Vertex v2
-     * @param {*} v3 Vertex v3
+     * @param {Array} v1 Vertex v1
+     * @param {Array} v2 Vertex v2
+     * @param {Array} v3 Vertex v3
      * @param {*} depth remaining subdivisons step
      */
     static fromOneToFourTriangles(sphere, v1, v2, v3, depth)
     {
         var v12 = [];   var v23 = [];   var v31 = [];   var i;
+        var color;
         if(depth == 0) {
             sphere.vertices.push(v1[0], v1[1], v1[2]);
-            sphere.colors.push(sphere.vertexColor[0], sphere.vertexColor[1], sphere.vertexColor[2], sphere.vertexColor[3]);
+            color = Sphere.colorValue(sphere, v1);
+            sphere.colors.push(color[0], color[1], color[2], color[3]);
             sphere.vertices.push(v2[0], v2[1], v2[2]);
-            sphere.colors.push(sphere.vertexColor[0], sphere.vertexColor[1], sphere.vertexColor[2], sphere.vertexColor[3]);
+            color = Sphere.colorValue(sphere, v2);
+            sphere.colors.push(color[0], color[1], color[2], color[3]);
             sphere.vertices.push(v3[0], v3[1], v3[2]);
-            sphere.colors.push(sphere.vertexColor[0], sphere.vertexColor[1], sphere.vertexColor[2], sphere.vertexColor[3]);
+            color = Sphere.colorValue(sphere, v1);
+            sphere.colors.push(color[0], color[1], color[2], color[3]);
+            
+            sphere.normals.push(Sphere.findNormal(v1, v2, v3));
 
             sphere.indices.push(sphere.indexCnt, sphere.indexCnt+1, sphere.indexCnt+1, sphere.indexCnt+2, sphere.indexCnt+2, sphere.indexCnt);
             sphere.indexCnt += 3;
@@ -150,7 +162,7 @@ class Sphere {
 
     /**
      * Normalize a vector using the size ratio of a sphere
-     * @param {*} v Vector to normalize
+     * @param {Array} v Vector to normalize
      * @param {*} size_ration size ratio of the sphere
      */
     static normalize(v, size_ration)
@@ -162,6 +174,44 @@ class Sphere {
             v[2]/=d / size_ration;
         }
         return v;
+    }
+
+    /**
+     * Compute the normal vector from 3 vertex
+     * @param {Array} V1 vertex 1
+     * @param {Array} V2 vertex 2
+     * @param {Array} V3 vertex 3
+     */
+    static findNormal(V1, V2, V3)
+    {
+        var N = [0.0, 0.0, 0.0];
+        N[0] = (V2[1]-V1[1])*(V3[2]-V1[2]) - (V2[2]-V1[2])*(V3[1]-V1[1]);
+        N[1] = (V2[2]-V1[2])*(V3[0]-V1[0]) - (V2[0]-V1[0])*(V3[2]-V1[2]);
+        N[2] = (V2[0]-V1[0])*(V3[1]-V1[1]) - (V2[1]-V1[1])*(V3[0]-V1[0]);
+
+        var norme = Math.sqrt(N[0]*N[0] + N[1]*N[1] + N[2]*N[2]);
+
+        if (norme > 0.0) {
+            N[0] /= norme; N[1] /= norme; N[2] /= norme;
+        } else {
+            console.info("Null vector");
+        }
+        return N;
+    }
+
+    /**
+     * Get the color of a vertex using its vertexColor attributs
+     * @param {Sphere} sphere sphere that hold the vertex
+     * @param {Array} v vertex
+     */
+    static colorValue(sphere, v)
+    {
+        if(v[1] > 0) {
+            return Object.assign({}, sphere.vertexColorNorth);
+        }
+        else{
+            return Object.assign({}, sphere.vertexColorSouth);
+        }
     }
 
     /**
@@ -210,6 +260,6 @@ class Sphere {
         glContext.bindBuffer(glContext.ARRAY_BUFFER, this.colorsBuffer);
         glContext.vertexAttribPointer(prg.colorAttribute, 4, glContext.FLOAT, false, 0, 0);
         glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
-        glContext.drawElements(glContext.LINES, indices.length, glContext.UNSIGNED_SHORT,0);
+        glContext.drawElements(glContext.TRIANGLE_STRIP, indices.length, glContext.UNSIGNED_SHORT,0);
     }
 }
