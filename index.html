@@ -46,11 +46,11 @@
 			var bx = +1.0;
 			var h = 0.0;
 			var displacement = 0.5;
-			var smoothness = 1.0;
-			var limit = 0.2;
+			var smoothness = 2;
+			var limit = 0.5;
 			var depth = -3.0;
 			var midpoint = new Midpoint(ax, bx, h, displacement, smoothness, limit, depth);
-			var sphere = new Sphere([0.0, 0.0, -3.0], 0.2, 2);
+			var sphere = new Sphere([0.0, 0.0, -3.0], 0.2, 1);
 
 			function degToRad(degrees)
 			{
@@ -111,6 +111,24 @@
 	</head>
 	<body onload="initWebGL()">
 		<script>displayTitle("WebGL: Labo2", 1,1,1,1,1,1,1);</script>
+		<div>
+			<label>
+				Rayon de la sphère :
+				<input type="number" step="0.05" min="0.01" max="0.8" />
+			</label>
+		</div>
+		<div>
+			<label>
+				Nombre de sphère :
+				<input type="number" min="1" max="10" />
+			</label>
+		</div>
+		<div>
+			<label>
+				Temps du metronome
+				<input type="number" step="0.1" min="0.5" max="0.5" max="2"/>
+			</label>
+		</div>
 		<canvas id="webgl-canvas" width="1000" height="1000">
 			HTML5 is not supported
 		</canvas>
