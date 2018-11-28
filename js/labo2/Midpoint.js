@@ -12,14 +12,14 @@ class Midpoint
    // smooth: smoothness of the midpoint algo.
    // limit: min. value to reach with the recursive algo. (distance between two points min.)
    // depth: depth of all the points (Z Axis)
-   constructor(ax, bx, h, displacement, smooth = 1.0, limit = 0.05, depth = -3.0)
+   constructor(ax, bx, h, displacement, sphereCount = 4,  smooth = 1.0, depth = -3.0)
    {
       this.ax = ax;
       this.bx = bx;
       this.h = h;
       this.displacement = displacement;
       this.smooth = smooth;
-      this.limit = limit;
+      this.limit = this.computeLimit(sphereCount);
       this.depth = depth;
 
       this.vertices = [];
@@ -29,6 +29,11 @@ class Midpoint
       this.colorsBuffer = null;
       this.indicesBuffer = null;
       this.size = 5;                // Useless, unless we draw points...
+   }
+
+   computeLimit(spheresCount)
+   {
+      return Math.abs(this.ax - this.bx) / (sphereCount-1);
    }
 
    // Create the geometry of the object

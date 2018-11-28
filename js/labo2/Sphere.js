@@ -155,9 +155,9 @@ class Sphere {
             color = Sphere.colorValue(sphere, v2);
             sphere.colors.push(color[0], color[1], color[2], color[3]);
             sphere.vertices.push(v3[0], v3[1], v3[2]);
-            color = Sphere.colorValue(sphere, v1);
+            color = Sphere.colorValue(sphere, v3);
             sphere.colors.push(color[0], color[1], color[2], color[3]);
-            
+
             sphere.normals.push(Sphere.findNormal(v1, v2, v3));
 
             sphere.indices.push(sphere.indexCnt, sphere.indexCnt+1, sphere.indexCnt+2);
