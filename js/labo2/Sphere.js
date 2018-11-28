@@ -42,6 +42,25 @@ class Sphere {
     }
 
     /**
+     * Reset all the sphere parameters
+     */
+    reset_parameters()
+    {
+        this.indexCnt = 0;
+        this.triangles = [];
+        this.vertices = [];
+        this.indices = [];
+        this.vertex = [];
+        this.colors =[];
+        this.normals = [];
+
+        this.verticesBuffer = null;
+        this.colorsBuffer = null;
+        this.indicesBuffer = null;
+        this.normalsBuffer = null;
+    }
+
+    /**
      * Push the points of the icosahedron
      */
     icosahedron_vertex()
@@ -141,7 +160,7 @@ class Sphere {
             
             sphere.normals.push(Sphere.findNormal(v1, v2, v3));
 
-            sphere.indices.push(sphere.indexCnt, sphere.indexCnt+1, sphere.indexCnt+1, sphere.indexCnt+2, sphere.indexCnt+2, sphere.indexCnt);
+            sphere.indices.push(sphere.indexCnt, sphere.indexCnt+1, sphere.indexCnt+2);
             sphere.indexCnt += 3;
         } else {
             for (i = 0; i < 3; i++) {
@@ -230,6 +249,7 @@ class Sphere {
 
     createGeometry()
     {
+        this.reset_parameters();
         this.icosahedron_vertex();
         this.icosahedron_triangle();
         this.generate_vertex();
@@ -260,6 +280,6 @@ class Sphere {
         glContext.bindBuffer(glContext.ARRAY_BUFFER, this.colorsBuffer);
         glContext.vertexAttribPointer(prg.colorAttribute, 4, glContext.FLOAT, false, 0, 0);
         glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
-        glContext.drawElements(glContext.TRIANGLE_STRIP, indices.length, glContext.UNSIGNED_SHORT,0);
+        glContext.drawElements(glContext.TRIANGLES, indices.length, glContext.UNSIGNED_SHORT,0);
     }
 }
