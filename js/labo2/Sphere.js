@@ -56,6 +56,12 @@ class Sphere {
         this.normalsBuffer = null;
     }
 
+    setSizeRation(sizeRation)
+    {
+      this.sizeRation = sizeRation;
+      this.createGeometry();
+    }
+
     /**
      * Push the points of the icosahedron
      */
@@ -110,8 +116,7 @@ class Sphere {
      */
     generate_vertex()
     {
-        var i;
-        for (i = 0; i < this.triangles.length; i+=3){
+        for (var i = 0; i < this.triangles.length; i+=3){
             var v1 = [];
             var v2 = [];
             var v3 = [];
@@ -119,14 +124,17 @@ class Sphere {
             v1.push(this.vertex[vertexIndexStart],
                 this.vertex[vertexIndexStart + 1],
                 this.vertex[vertexIndexStart + 2]);
+
             vertexIndexStart = this.triangles[i+1] * 3;
             v2.push(this.vertex[vertexIndexStart],
                 this.vertex[vertexIndexStart + 1],
                 this.vertex[vertexIndexStart + 2]);
+
             vertexIndexStart = this.triangles[i+2] * 3;
             v3.push(this.vertex[vertexIndexStart],
                 this.vertex[vertexIndexStart + 1],
                 this.vertex[vertexIndexStart + 2]);
+
             Sphere.fromOneToFourTriangles(this, v1, v2, v3, this.subdivision);
         }
     }
@@ -161,7 +169,7 @@ class Sphere {
             sphere.indices.push(sphere.indexCnt, sphere.indexCnt+1, sphere.indexCnt+2);
             sphere.indexCnt += 3;
         } else {
-            for (i = 0; i < 3; i++) {
+            for (var i = 0; i < 3; i++) {
                 v12.push( (v1[i]+v2[i])/2.0 );
                 v23.push( (v2[i]+v3[i])/2.0 );
                 v31.push( (v3[i]+v1[i])/2.0 );
@@ -222,8 +230,7 @@ class Sphere {
      */
     translate_to(v)
     {
-        var i;
-        for(i=0; i < this.vertices.length; i+=3) {
+        for(var i=0; i < this.vertices.length; i+=3) {
             this.vertices[i] += v[0];
             this.vertices[i+1] += v[1];
             this.vertices[i+2] += v[2];
@@ -252,16 +259,15 @@ class Sphere {
         glContext.enableVertexAttribArray(prg.vertexPositionAttribute);
         prg.colorAttribute = glContext.getAttribLocation(prg, "aVertexColor");
         glContext.enableVertexAttribArray(prg.colorAttribute);
-        
+
         prg.vertexNormalAttribute = glContext.getAttribLocation(prg, "aVertexNormal");
-		glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
+	      glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
     }
 
     render()
     {
         let prg = this.prg;
         let indices = this.indices;
-
 
         glContext.bindBuffer(glContext.ARRAY_BUFFER, this.normalsBuffer);
         glContext.vertexAttribPointer(prg.vertexNormalAttribute, 3, glContext.FLOAT, false, 0, 0);

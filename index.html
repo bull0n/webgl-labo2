@@ -17,7 +17,7 @@
 		attribute vec4 aVertexColor;
 		attribute vec3 aVertexNormal;
 		uniform float uPointSize;
-		
+
 		/* Lights */
 		uniform mat4 uNMatrix;
 		uniform vec3 uLightPosition;
@@ -62,6 +62,7 @@
 				vec3 N = normalize(vNormal);
 				float lambertTerm = dot(N,-L);
 				vec3 finalColor = uLightAmbient;
+
 				if(lambertTerm > 0.0)
 				{
 					finalColor += uMaterialDiffuse * lambertTerm;
@@ -73,6 +74,7 @@
 				else{
 					finalColor.xyz = vVertexColor.xyz;
 				}
+
 				gl_FragColor = vec4(finalColor, 1.0);
 			}
 			</script>
@@ -101,19 +103,20 @@
 				// Light
 				prg.lightPositionUniform       = glContext.getUniformLocation(prg, 'uLightPosition');
 				prg.shininessUniform           = glContext.getUniformLocation(prg, 'uShininess');
-			    prg.lightAmbientUniform        = glContext.getUniformLocation(prg, 'uLightAmbient');
-			    prg.materialDiffuseUniform     = glContext.getUniformLocation(prg, 'uMaterialDiffuse');
-			    prg.materialSpecularUniform    = glContext.getUniformLocation(prg, 'uMaterialSpecular');
+		    prg.lightAmbientUniform        = glContext.getUniformLocation(prg, 'uLightAmbient');
+		    prg.materialDiffuseUniform     = glContext.getUniformLocation(prg, 'uMaterialDiffuse');
+		    prg.materialSpecularUniform    = glContext.getUniformLocation(prg, 'uMaterialSpecular');
 
 				midpoint.setupShader(prg);
 				sphere.setupShader(prg);
 			}
 
-			function initLights(){
+			function initLights()
+			{
 			    glContext.uniform3f(prg.lightPositionUniform, 1, 1, 1);
 			    glContext.uniform3f(prg.lightAmbientUniform,0.1,0.1,0.1);
-				glContext.uniform3f(prg.materialSpecularUniform, 0.5,0.5,0.5);
-				glContext.uniform3f(prg.materialDiffuseUniform, 0.8,0.3,0.3);
+					glContext.uniform3f(prg.materialSpecularUniform, 0.5,0.5,0.5);
+					glContext.uniform3f(prg.materialDiffuseUniform, 0.8,0.3,0.3);
 			    glContext.uniform1f(prg.shininessUniform, 24.0);
 			}
 
@@ -137,10 +140,10 @@
 				glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mvMatrix);
 
 				var nMatrix = mat4.create();
-			    mat4.copy(nMatrix, mvMatrix);
-			    mat4.invert(nMatrix, nMatrix);
-			    mat4.transpose(nMatrix, nMatrix);
-			    glContext.uniformMatrix4fv(prg.nMatrixUniform, false, nMatrix);
+		    mat4.copy(nMatrix, mvMatrix);
+		    mat4.invert(nMatrix, nMatrix);
+		    mat4.transpose(nMatrix, nMatrix);
+		    glContext.uniformMatrix4fv(prg.nMatrixUniform, false, nMatrix);
 
 				midpoint.render();
 
@@ -164,6 +167,23 @@
 				initBuffers();
 				renderLoop();
 			}
+
+			//EVENTS
+			document.addEventListener("DOMContentLoaded", function() {
+				// sphere radius
+				document.querySelector('#time-metronom').onchange = function(){
+					console.log('time');
+				};
+
+				document.querySelector('#nb-sphere').onchange = function(){
+					console.log('nb-sphere');
+				};
+
+				// sphere radius
+				document.querySelector('#sphere-radius').onchange = function(event){
+					sphere.setSizeRation(this.value);
+				};
+			});
 		</script>
 	</head>
 	<body onload="initWebGL()">
@@ -171,19 +191,24 @@
 		<div>
 			<label>
 				Rayon de la sphère :
-				<input type="number" step="0.05" min="0.01" max="0.8" />
+				<input type="number" id="sphere-radius" value="0.1" step="0.05" min="0.01" max="0.8" />
 			</label>
 		</div>
 		<div>
 			<label>
 				Nombre de sphère :
-				<input type="number" min="1" max="10" />
+				<select id="nb-sphere">
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="5">5</option>
+					<option value="9">9</option>
+				</select>
 			</label>
 		</div>
 		<div>
 			<label>
 				Temps du metronome
-				<input type="number" step="0.1" min="0.5" max="0.5" max="2"/>
+				<input type="number" id="time-metronom" step="0.1" min="0.5" max="0.5" max="2"/>
 			</label>
 		</div>
 		<canvas id="webgl-canvas" width="1000" height="1000">
