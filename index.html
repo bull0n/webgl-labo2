@@ -82,12 +82,20 @@
 			var mvMatrix = mat4.create();
 			var pMatrix = mat4.create();
 
+			// init midPoint
 			var ax = -1.2;
 			var bx = +1.2;
 			var h = 0.0;
 			var displacement = 0.5;
-			var midpoint = new Midpoint(ax, bx, h, displacement);
-			var sphere = new Sphere([0.0, 0.0, -3.0], 0.2, 0);
+			var smoothness = 1;
+			var depth = -3.0;
+			var sphereCount = 2;
+			var midpoint = new Midpoint(ax, bx, h, displacement, sphereCount, smoothness, depth);
+
+			var center = [0.0, 0.0, -3.0];
+			var ratio = 0.2;
+			var subdivision = 0;
+			var sphere = new Sphere(center, ratio, subdivision);
 
 			function degToRad(degrees)
 			{
@@ -176,7 +184,7 @@
 				};
 
 				document.querySelector('#nb-sphere').onchange = function(){
-					console.log('nb-sphere');
+					nbSphere = parseInt(this.value);
 				};
 
 				// sphere radius

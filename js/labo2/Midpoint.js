@@ -12,7 +12,7 @@ class Midpoint
    // smooth: smoothness of the midpoint algo.
    // limit: min. value to reach with the recursive algo. (distance between two points min.)
    // depth: depth of all the points (Z Axis)
-   constructor(ax, bx, h, displacement, sphereCount=4.0,  smooth = 1.0, depth = -3.0)
+   constructor(ax, bx, h, displacement, sphereCount = 4.0,  smooth = 1.0, depth = -3.0)
    {
       this.ax = ax;
       this.bx = bx;
@@ -22,20 +22,25 @@ class Midpoint
       this.limit = this.computeLimit(sphereCount);
       this.depth = depth;
 
-      this.vertices = [];
-      this.colors = [];
-      this.indices = [];
-      this.normals = [];
-      this.verticesBuffer = null;
-      this.colorsBuffer = null;
-      this.indicesBuffer = null;
-      this.normalsBuffer = null;
+      this.initializeBufferArrays
       this.size = 5;                // Useless, unless we draw points...
+   }
+
+   initializeBufferArrays()
+   {
+     this.vertices = [];
+     this.colors = [];
+     this.indices = [];
+     this.normals = [];
+     this.verticesBuffer = null;
+     this.colorsBuffer = null;
+     this.indicesBuffer = null;
+     this.normalsBuffer = null;
    }
 
    computeLimit(spheresCount)
    {
-      return Math.abs(this.ax - this.bx) / (spheresCount-1);
+      return Math.abs(this.ax - this.bx) / (spheresCount-1.0);
    }
 
    // Create the geometry of the object
@@ -137,7 +142,7 @@ class Midpoint
       prg.pointSize = glContext.getUniformLocation(prg, "uPointSize");
 
       prg.vertexNormalAttribute = glContext.getAttribLocation(prg, "aVertexNormal");
-		glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
+	    glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
    }
 
    // To draw inside drawScene
