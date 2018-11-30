@@ -12,7 +12,7 @@ class Midpoint
    // smooth: smoothness of the midpoint algo.
    // limit: min. value to reach with the recursive algo. (distance between two points min.)
    // depth: depth of all the points (Z Axis)
-   constructor(ax, bx, h, displacement, sphereCount = 4,  smooth = 1.0, depth = -3.0)
+   constructor(ax, bx, h, displacement, sphereCount=4.0,  smooth = 1.0, depth = -3.0)
    {
       this.ax = ax;
       this.bx = bx;
@@ -25,15 +25,17 @@ class Midpoint
       this.vertices = [];
       this.colors = [];
       this.indices = [];
+      this.normals = [];
       this.verticesBuffer = null;
       this.colorsBuffer = null;
       this.indicesBuffer = null;
+      this.normalsBuffer = null;
       this.size = 5;                // Useless, unless we draw points...
    }
 
    computeLimit(spheresCount)
    {
-     return Math.abs(this.ax - this.bx) / (sphereCount-1);
+      return Math.abs(this.ax - this.bx) / (spheresCount-1);
    }
 
    // Create the geometry of the object
@@ -46,6 +48,7 @@ class Midpoint
       this.verticesBuffer = getVertexBufferWithVertices(this.vertices);
       this.colorsBuffer  = getVertexBufferWithVertices(this.colors);
       this.indicesBuffer  = getIndexBufferWithIndices(this.indices);
+      this.normalsBuffer = getVertexBufferWithVertices(this.normals);
    }
 
    // Execute the midpoint algo.
@@ -54,6 +57,7 @@ class Midpoint
       let vertices = this.vertices;
       let colors = this.colors;
       let indices = this.indices;
+      let normals = this.normals;
 
       // Prapare point A and point B of the segment
       let a = [this.ax, this.initializeY(), this.depth];
@@ -63,6 +67,7 @@ class Midpoint
       vertices.push(a[0], a[1], a[2]);
       colors.push(1.0, 0.0, 0.0, 1.0);
       indices.push(this.indices.length);
+      normals.push(0.0, 0.0, 0.0);
 
       // Execute midpoint algo. (recursive)
       this.recursiveCompute(a, b, this.displacement);
@@ -71,6 +76,7 @@ class Midpoint
       vertices.push(b[0], b[1], b[2]);
       colors.push(1.0, 0.0, 0.0, 1.0);
       indices.push(indices.length);
+      normals.push(0.0, 0.0, 0.0);
    }
 
    // Compute points between two others points (recursively)
@@ -97,6 +103,7 @@ class Midpoint
          this.vertices.push(c[X], c[Y], c[Z]);
          this.colors.push(1.0, 0.0, 0.0, 1.0);
          this.indices.push(this.indices.length);   // the vertices are always set in the right order (0,1,2,3,4 ...)
+         this.normals.push(0.0, 0.0, 0.0);
 
          // execute the recursion between C (new point) and B
          this.recursiveCompute(c, b, newDisplacement);
@@ -128,6 +135,9 @@ class Midpoint
       prg.colorAttribute = glContext.getAttribLocation(prg, "aVertexColor");
       glContext.enableVertexAttribArray(prg.colorAttribute);
       prg.pointSize = glContext.getUniformLocation(prg, "uPointSize");
+
+      prg.vertexNormalAttribute = glContext.getAttribLocation(prg, "aVertexNormal");
+		glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
    }
 
    // To draw inside drawScene
@@ -136,6 +146,9 @@ class Midpoint
       let prg = this.prg;
       let indices = this.indices;
       let pointSize = this.size;
+
+      glContext.bindBuffer(glContext.ARRAY_BUFFER, this.normalsBuffer);
+      glContext.vertexAttribPointer(prg.vertexNormalAttribute, 3, glContext.FLOAT, false, 0, 0);
 
       glContext.bindBuffer(glContext.ARRAY_BUFFER, this.verticesBuffer);
       glContext.vertexAttribPointer(prg.vertexPositionAttribute, 3, glContext.FLOAT, false, 0, 0);

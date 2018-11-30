@@ -28,11 +28,26 @@ class Sphere {
         this.indices = [];
         this.vertexColor = [];
         this.vertexColor.push(0.7, 0.7, 0.0, 1.0);
-        this.vertexColorNorth = [];
-        this.vertexColorNorth.push(0.7, 0.7, 0.0, 1.0);
-        this.vertexColorSouth = [];
-        this.vertexColorSouth.push(0.7, 0.0, 0.0, 1.0);
-        this.colors = [];
+        this.colors =[];
+        this.normals = [];
+
+        this.verticesBuffer = null;
+        this.colorsBuffer = null;
+        this.indicesBuffer = null;
+        this.normalsBuffer = null;
+    }
+
+    /**
+     * Reset all the sphere parameters
+     */
+    reset_parameters()
+    {
+        this.indexCnt = 0;
+        this.triangles = [];
+        this.vertices = [];
+        this.indices = [];
+        this.vertex = [];
+        this.colors =[];
         this.normals = [];
 
         this.verticesBuffer = null;
@@ -101,8 +116,7 @@ class Sphere {
      */
     generate_vertex()
     {
-        var i;
-        for (i = 0; i < this.triangles.length; i+=3){
+        for (var i = 0; i < this.triangles.length; i+=3){
             var v1 = [];
             var v2 = [];
             var v3 = [];
@@ -110,14 +124,17 @@ class Sphere {
             v1.push(this.vertex[vertexIndexStart],
                 this.vertex[vertexIndexStart + 1],
                 this.vertex[vertexIndexStart + 2]);
+
             vertexIndexStart = this.triangles[i+1] * 3;
             v2.push(this.vertex[vertexIndexStart],
                 this.vertex[vertexIndexStart + 1],
                 this.vertex[vertexIndexStart + 2]);
+
             vertexIndexStart = this.triangles[i+2] * 3;
             v3.push(this.vertex[vertexIndexStart],
                 this.vertex[vertexIndexStart + 1],
                 this.vertex[vertexIndexStart + 2]);
+
             Sphere.fromOneToFourTriangles(this, v1, v2, v3, this.subdivision);
         }
     }
@@ -132,25 +149,27 @@ class Sphere {
      */
     static fromOneToFourTriangles(sphere, v1, v2, v3, depth)
     {
-        var v12 = [];   var v23 = [];   var v31 = [];   var i;
-        var color;
+        var v12 = [];   var v23 = [];   var v31 = [];   var i; var n;
         if(depth == 0) {
             sphere.vertices.push(v1[0], v1[1], v1[2]);
-            color = Sphere.colorValue(sphere, v1);
-            sphere.colors.push(color[0], color[1], color[2], color[3]);
             sphere.vertices.push(v2[0], v2[1], v2[2]);
-            color = Sphere.colorValue(sphere, v2);
-            sphere.colors.push(color[0], color[1], color[2], color[3]);
             sphere.vertices.push(v3[0], v3[1], v3[2]);
-            color = Sphere.colorValue(sphere, v3);
-            sphere.colors.push(color[0], color[1], color[2], color[3]);
+            n = Sphere.normalize(v1, sphere.size_ration);
+            sphere.normals.push(n[0], n[1], n[2]);
+            n = Sphere.normalize(v2, sphere.size_ration);
+            sphere.normals.push(n[0], n[1], n[2]);
+            n = Sphere.normalize(v3, sphere.size_ration);
+            sphere.normals.push(n[0], n[1], n[2]);
 
-            sphere.normals.push(Sphere.findNormal(v1, v2, v3));
+            for(var i = 0; i < 3; i++) {    // foreach vertex
+                // Add color
+                sphere.colors.push(sphere.vertexColor[0], sphere.vertexColor[1], sphere.vertexColor[2], sphere.vertexColor[3]);
+            }
 
-            sphere.indices.push(sphere.indexCnt, sphere.indexCnt+1, sphere.indexCnt+1, sphere.indexCnt+2, sphere.indexCnt+2, sphere.indexCnt);
+            sphere.indices.push(sphere.indexCnt, sphere.indexCnt+1, sphere.indexCnt+2);
             sphere.indexCnt += 3;
         } else {
-            for (i = 0; i < 3; i++) {
+            for (var i = 0; i < 3; i++) {
                 v12.push( (v1[i]+v2[i])/2.0 );
                 v23.push( (v2[i]+v3[i])/2.0 );
                 v31.push( (v3[i]+v1[i])/2.0 );
@@ -183,12 +202,12 @@ class Sphere {
     }
 
     /**
-     * Compute the normal vector from 3 vertex
+     * Compute the normal vector of a triangle
      * @param {Array} V1 vertex 1
      * @param {Array} V2 vertex 2
      * @param {Array} V3 vertex 3
      */
-    static findNormal(V1, V2, V3)
+    static findNormalofTriangle(V1, V2, V3)
     {
         var N = [0.0, 0.0, 0.0];
         N[0] = (V2[1]-V1[1])*(V3[2]-V1[2]) - (V2[2]-V1[2])*(V3[1]-V1[1]);
@@ -206,28 +225,12 @@ class Sphere {
     }
 
     /**
-     * Get the color of a vertex using its vertexColor attributs
-     * @param {Sphere} sphere sphere that hold the vertex
-     * @param {Array} v vertex
-     */
-    static colorValue(sphere, v)
-    {
-        if(v[1] > 0) {
-            return Object.assign({}, sphere.vertexColorNorth);
-        }
-        else{
-            return Object.assign({}, sphere.vertexColorSouth);
-        }
-    }
-
-    /**
      * Diplace the sphere to a destination point.
      * @param {*} v Destination vertex as array with 3 components
      */
     translate_to(v)
     {
-        var i;
-        for(i=0; i < this.vertices.length; i+=3) {
+        for(var i=0; i < this.vertices.length; i+=3) {
             this.vertices[i] += v[0];
             this.vertices[i+1] += v[1];
             this.vertices[i+2] += v[2];
@@ -236,6 +239,7 @@ class Sphere {
 
     createGeometry()
     {
+        this.reset_parameters();
         this.icosahedron_vertex();
         this.icosahedron_triangle();
         this.generate_vertex();
@@ -244,6 +248,7 @@ class Sphere {
         this.verticesBuffer = getVertexBufferWithVertices(this.vertices);
         this.colorsBuffer  = getVertexBufferWithVertices(this.colors);
         this.indicesBuffer  = getIndexBufferWithIndices(this.indices);
+        this.normalsBuffer = getVertexBufferWithVertices(this.normals);
     }
 
     setupShader(prg)
@@ -254,6 +259,9 @@ class Sphere {
         glContext.enableVertexAttribArray(prg.vertexPositionAttribute);
         prg.colorAttribute = glContext.getAttribLocation(prg, "aVertexColor");
         glContext.enableVertexAttribArray(prg.colorAttribute);
+
+        prg.vertexNormalAttribute = glContext.getAttribLocation(prg, "aVertexNormal");
+	      glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
     }
 
     render()
@@ -261,11 +269,14 @@ class Sphere {
         let prg = this.prg;
         let indices = this.indices;
 
+        glContext.bindBuffer(glContext.ARRAY_BUFFER, this.normalsBuffer);
+        glContext.vertexAttribPointer(prg.vertexNormalAttribute, 3, glContext.FLOAT, false, 0, 0);
+
         glContext.bindBuffer(glContext.ARRAY_BUFFER, this.verticesBuffer);
         glContext.vertexAttribPointer(prg.vertexPositionAttribute, 3, glContext.FLOAT, false, 0, 0);
         glContext.bindBuffer(glContext.ARRAY_BUFFER, this.colorsBuffer);
         glContext.vertexAttribPointer(prg.colorAttribute, 4, glContext.FLOAT, false, 0, 0);
         glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
-        glContext.drawElements(glContext.TRIANGLE_STRIP, indices.length, glContext.UNSIGNED_SHORT,0);
+        glContext.drawElements(glContext.TRIANGLES, indices.length, glContext.UNSIGNED_SHORT,0);
     }
 }
