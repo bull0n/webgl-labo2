@@ -46,10 +46,7 @@
 			var bx = +1.0;
 			var h = 0.0;
 			var displacement = 0.5;
-			var smoothness = 2;
-			var limit = 0.5;
-			var depth = -3.0;
-			var midpoint = new Midpoint(ax, bx, h, displacement, smoothness, limit, depth);
+			var midpoint = new Midpoint(ax, bx, h, displacement);
 			var sphere = new Sphere([0.0, 0.0, -3.0], 0.2, 1);
 
 			function degToRad(degrees)
