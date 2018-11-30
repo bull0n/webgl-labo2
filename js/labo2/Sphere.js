@@ -32,13 +32,19 @@ class Sphere {
         this.vertexColorNorth.push(0.7, 0.7, 0.0, 1.0);
         this.vertexColorSouth = [];
         this.vertexColorSouth.push(0.7, 0.0, 0.0, 1.0);
-        this.colors =[];
+        this.colors = [];
         this.normals = [];
 
         this.verticesBuffer = null;
         this.colorsBuffer = null;
         this.indicesBuffer = null;
         this.normalsBuffer = null;
+    }
+
+    setSizeRation(sizeRation)
+    {
+      this.sizeRation = sizeRation;
+      this.createGeometry();
     }
 
     /**
