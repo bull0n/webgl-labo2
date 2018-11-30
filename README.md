@@ -8,3 +8,4 @@
 # Ressources
 
 Focus on 3D terrain programming: http://lib.ysu.am/open_books/312636.pdf
+JS conventions: https://www.w3schools.com/js/js_conventions.asp
