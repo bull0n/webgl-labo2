@@ -22,11 +22,11 @@ class Midpoint
       this.limit = this.computeLimit(spheresCount);
       this.depth = depth;
 
-      this.initializeBufferArrays
+      this.initializeArrays()
       this.size = 5;                // Useless, unless we draw points...
    }
 
-   initializeBufferArrays()
+   initializeArrays()
    {
      this.vertices = [];
      this.colors = [];
@@ -36,6 +36,13 @@ class Midpoint
      this.colorsBuffer = null;
      this.indicesBuffer = null;
      this.normalsBuffer = null;
+   }
+
+   setSpheresCount(spheresCount)
+   {
+     this.initializeArrays();
+     this.limit = this.computeLimit(spheresCount);
+     this.createGeometry();
    }
 
    computeLimit(spheresCount)

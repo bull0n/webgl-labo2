@@ -42,42 +42,42 @@
 		}
 		</script>
 		<script id="shader-fs" type="x-shader/x-fragment">
-			#ifdef GL_ES
-				precision highp float;
-			#endif
+		#ifdef GL_ES
+			precision highp float;
+		#endif
 
-			varying vec4 vVertexColor;
+		varying vec4 vVertexColor;
 
-			/* Lights */
-			uniform float uShininess;
-			uniform vec3 uLightAmbient;
-			uniform vec3 uMaterialDiffuse;
-			uniform vec3 uMaterialSpecular;
-			varying vec3 vNormal;
-			varying vec3 vLightRay;
-			varying vec3 vEyeVec;
+		/* Lights */
+		uniform float uShininess;
+		uniform vec3 uLightAmbient;
+		uniform vec3 uMaterialDiffuse;
+		uniform vec3 uMaterialSpecular;
+		varying vec3 vNormal;
+		varying vec3 vLightRay;
+		varying vec3 vEyeVec;
 
-			void main(void) {
-				vec3 L = normalize(vLightRay);
-				vec3 N = normalize(vNormal);
-				float lambertTerm = dot(N,-L);
-				vec3 finalColor = uLightAmbient;
+		void main(void) {
+			vec3 L = normalize(vLightRay);
+			vec3 N = normalize(vNormal);
+			float lambertTerm = dot(N,-L);
+			vec3 finalColor = uLightAmbient;
 
-				if(lambertTerm > 0.0)
-				{
-					finalColor += uMaterialDiffuse * lambertTerm;
-					vec3 E = normalize(vEyeVec);
-					vec3 R = reflect(L, N);
-					float specular = pow( max(dot(R, E), 0.0), uShininess);
-					finalColor += uMaterialSpecular * specular;
-				}
-				else{
-					finalColor.xyz = vVertexColor.xyz;
-				}
-
-				gl_FragColor = vec4(finalColor, 1.0);
+			if(lambertTerm > 0.0)
+			{
+				finalColor += uMaterialDiffuse * lambertTerm;
+				vec3 E = normalize(vEyeVec);
+				vec3 R = reflect(L, N);
+				float specular = pow( max(dot(R, E), 0.0), uShininess);
+				finalColor += uMaterialSpecular * specular;
 			}
-			</script>
+			else{
+				finalColor.xyz = vVertexColor.xyz;
+			}
+
+			gl_FragColor = vec4(finalColor, 1.0);
+		}
+		</script>
 		<script>
 			var mvMatrix = mat4.create();
 			var pMatrix = mat4.create();
@@ -93,7 +93,7 @@
 			var midpoint = new Midpoint(ax, bx, h, displacement, sphereCount, smoothness, depth);
 
 			var center = [0.0, 0.0, -3.0];
-			var ratio = 0.2;
+			var ratio = 0.5;
 			var subdivision = 0;
 			var sphere = new Sphere(center, ratio, subdivision);
 
@@ -174,22 +174,27 @@
 				initProgram();
 				initBuffers();
 				renderLoop();
+
+				document.querySelector('#sphere-radius').onchange();
+				document.querySelector('#nb-sphere').onchange();
 			}
 
 			//EVENTS
 			document.addEventListener("DOMContentLoaded", function() {
-				// sphere radius
+				let radiusInput =  document.querySelector('#sphere-radius');
+				let nbSphereInput = document.querySelector('#nb-sphere');
+
 				document.querySelector('#time-metronom').onchange = function(){
 					console.log('time');
 				};
 
-				document.querySelector('#nb-sphere').onchange = function(){
-					nbSphere = parseInt(this.value);
+				nbSphereInput.onchange = function(){
+					midpoint.setSpheresCount(parseInt(this.value));
 				};
 
 				// sphere radius
-				document.querySelector('#sphere-radius').onchange = function(event){
-					sphere.setSizeRation(this.value);
+				radiusInput.onchange = function(event){
+					sphere.setSizeRation(this.value*2);
 				};
 			});
 		</script>

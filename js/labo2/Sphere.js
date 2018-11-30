@@ -21,26 +21,13 @@ class Sphere {
         this.size_ration = size_ration;
         this.subdivision = subdivision;
 
-        this.indexCnt = 0;
-        this.vertex = [];
-        this.triangles = [];
-        this.vertices = [];
-        this.indices = [];
-        this.vertexColor = [];
-        this.vertexColor.push(0.7, 0.7, 0.0, 1.0);
-        this.colors =[];
-        this.normals = [];
-
-        this.verticesBuffer = null;
-        this.colorsBuffer = null;
-        this.indicesBuffer = null;
-        this.normalsBuffer = null;
+        this.initializeArrays();
     }
 
     /**
      * Reset all the sphere parameters
      */
-    reset_parameters()
+    initializeArrays()
     {
         this.indexCnt = 0;
         this.triangles = [];
@@ -49,6 +36,8 @@ class Sphere {
         this.vertex = [];
         this.colors =[];
         this.normals = [];
+        this.vertexColor = [];
+        this.vertexColor.push(0.7, 0.7, 0.0, 1.0);
 
         this.verticesBuffer = null;
         this.colorsBuffer = null;
@@ -58,7 +47,8 @@ class Sphere {
 
     setSizeRation(sizeRation)
     {
-      this.sizeRation = sizeRation;
+      this.initializeArrays();
+      this.size_ration = sizeRation;
       this.createGeometry();
     }
 
@@ -239,7 +229,6 @@ class Sphere {
 
     createGeometry()
     {
-        this.reset_parameters();
         this.icosahedron_vertex();
         this.icosahedron_triangle();
         this.generate_vertex();
