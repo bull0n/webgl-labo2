@@ -28,10 +28,6 @@ class Sphere {
         this.indices = [];
         this.vertexColor = [];
         this.vertexColor.push(0.7, 0.7, 0.0, 1.0);
-        this.vertexColorNorth = [];
-        this.vertexColorNorth.push(0.7, 0.7, 0.0, 1.0);
-        this.vertexColorSouth = [];
-        this.vertexColorSouth.push(0.7, 0.0, 0.0, 1.0);
         this.colors =[];
         this.normals = [];
 
@@ -145,20 +141,22 @@ class Sphere {
      */
     static fromOneToFourTriangles(sphere, v1, v2, v3, depth)
     {
-        var v12 = [];   var v23 = [];   var v31 = [];   var i;
-        var color;
+        var v12 = [];   var v23 = [];   var v31 = [];   var i; var n;
         if(depth == 0) {
             sphere.vertices.push(v1[0], v1[1], v1[2]);
-            color = Sphere.colorValue(sphere, v1);
-            sphere.colors.push(color[0], color[1], color[2], color[3]);
             sphere.vertices.push(v2[0], v2[1], v2[2]);
-            color = Sphere.colorValue(sphere, v2);
-            sphere.colors.push(color[0], color[1], color[2], color[3]);
             sphere.vertices.push(v3[0], v3[1], v3[2]);
-            color = Sphere.colorValue(sphere, v3);
-            sphere.colors.push(color[0], color[1], color[2], color[3]);
+            n = Sphere.normalize(v1, sphere.size_ration);
+            sphere.normals.push(n[0], n[1], n[2]);
+            n = Sphere.normalize(v2, sphere.size_ration);
+            sphere.normals.push(n[0], n[1], n[2]);
+            n = Sphere.normalize(v3, sphere.size_ration);
+            sphere.normals.push(n[0], n[1], n[2]);
 
-            sphere.normals.push(Sphere.findNormal(v1, v2, v3));
+            for(var i = 0; i < 3; i++) {    // foreach vertex
+                // Add color
+                sphere.colors.push(sphere.vertexColor[0], sphere.vertexColor[1], sphere.vertexColor[2], sphere.vertexColor[3]);
+            }
 
             sphere.indices.push(sphere.indexCnt, sphere.indexCnt+1, sphere.indexCnt+2);
             sphere.indexCnt += 3;
@@ -196,12 +194,12 @@ class Sphere {
     }
 
     /**
-     * Compute the normal vector from 3 vertex
+     * Compute the normal vector of a triangle
      * @param {Array} V1 vertex 1
      * @param {Array} V2 vertex 2
      * @param {Array} V3 vertex 3
      */
-    static findNormal(V1, V2, V3)
+    static findNormalofTriangle(V1, V2, V3)
     {
         var N = [0.0, 0.0, 0.0];
         N[0] = (V2[1]-V1[1])*(V3[2]-V1[2]) - (V2[2]-V1[2])*(V3[1]-V1[1]);
@@ -216,21 +214,6 @@ class Sphere {
             console.info("Null vector");
         }
         return N;
-    }
-
-    /**
-     * Get the color of a vertex using its vertexColor attributs
-     * @param {Sphere} sphere sphere that hold the vertex
-     * @param {Array} v vertex
-     */
-    static colorValue(sphere, v)
-    {
-        if(v[1] > 0) {
-            return Object.assign({}, sphere.vertexColorNorth);
-        }
-        else{
-            return Object.assign({}, sphere.vertexColorSouth);
-        }
     }
 
     /**
@@ -258,6 +241,7 @@ class Sphere {
         this.verticesBuffer = getVertexBufferWithVertices(this.vertices);
         this.colorsBuffer  = getVertexBufferWithVertices(this.colors);
         this.indicesBuffer  = getIndexBufferWithIndices(this.indices);
+        this.normalsBuffer = getVertexBufferWithVertices(this.normals);
     }
 
     setupShader(prg)
@@ -268,12 +252,19 @@ class Sphere {
         glContext.enableVertexAttribArray(prg.vertexPositionAttribute);
         prg.colorAttribute = glContext.getAttribLocation(prg, "aVertexColor");
         glContext.enableVertexAttribArray(prg.colorAttribute);
+        
+        prg.vertexNormalAttribute = glContext.getAttribLocation(prg, "aVertexNormal");
+		glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
     }
 
     render()
     {
         let prg = this.prg;
         let indices = this.indices;
+
+
+        glContext.bindBuffer(glContext.ARRAY_BUFFER, this.normalsBuffer);
+        glContext.vertexAttribPointer(prg.vertexNormalAttribute, 3, glContext.FLOAT, false, 0, 0);
 
         glContext.bindBuffer(glContext.ARRAY_BUFFER, this.verticesBuffer);
         glContext.vertexAttribPointer(prg.vertexPositionAttribute, 3, glContext.FLOAT, false, 0, 0);

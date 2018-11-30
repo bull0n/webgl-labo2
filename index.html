@@ -15,39 +15,77 @@
 		uniform mat4 uPMatrix;
 		attribute vec3 aVertexPosition;
 		attribute vec4 aVertexColor;
+		attribute vec3 aVertexNormal;
 		uniform float uPointSize;
+		
+		/* Lights */
+		uniform mat4 uNMatrix;
+		uniform vec3 uLightPosition;
+		varying vec3 vNormal;
+		varying vec3 vLightRay;
+		varying vec3 vEyeVec;
 
 		varying vec4 vVertexColor;
 
 		void main(void)
 		{
 			gl_PointSize = uPointSize;
-			gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+			vec4 vertex = uMVMatrix * vec4(aVertexPosition, 1.0);
+			gl_Position = uPMatrix * vertex;
 
 			vVertexColor = aVertexColor;
+
+			vNormal = vec3(uNMatrix * vec4(aVertexNormal, 1.0));
+			vec4 light = vec4(uLightPosition,1.0);
+			vLightRay = vertex.xyz - light.xyz;
+			vEyeVec = -vec3(vertex.xyz);
 		}
 		</script>
 		<script id="shader-fs" type="x-shader/x-fragment">
 			#ifdef GL_ES
 				precision highp float;
 			#endif
+
 			varying vec4 vVertexColor;
 
-			void main(void)
-			{
-				gl_FragColor = vVertexColor;
+			/* Lights */
+			uniform float uShininess;
+			uniform vec3 uLightAmbient;
+			uniform vec3 uMaterialDiffuse;
+			uniform vec3 uMaterialSpecular;
+			varying vec3 vNormal;
+			varying vec3 vLightRay;
+			varying vec3 vEyeVec;
+
+			void main(void) {
+				vec3 L = normalize(vLightRay);
+				vec3 N = normalize(vNormal);
+				float lambertTerm = dot(N,-L);
+				vec3 finalColor = uLightAmbient;
+				if(lambertTerm > 0.0)
+				{
+					finalColor += uMaterialDiffuse * lambertTerm;
+					vec3 E = normalize(vEyeVec);
+					vec3 R = reflect(L, N);
+					float specular = pow( max(dot(R, E), 0.0), uShininess);
+					finalColor += uMaterialSpecular * specular;
+				}
+				else{
+					finalColor.xyz = vVertexColor.xyz;
+				}
+				gl_FragColor = vec4(finalColor, 1.0);
 			}
 			</script>
 		<script>
 			var mvMatrix = mat4.create();
 			var pMatrix = mat4.create();
 
-			var ax = -1.0;
-			var bx = +1.0;
+			var ax = -1.2;
+			var bx = +1.2;
 			var h = 0.0;
 			var displacement = 0.5;
 			var midpoint = new Midpoint(ax, bx, h, displacement);
-			var sphere = new Sphere([0.0, 0.0, -3.0], 0.2, 1);
+			var sphere = new Sphere([0.0, 0.0, -3.0], 0.2, 0);
 
 			function degToRad(degrees)
 			{
@@ -58,9 +96,25 @@
 			{
 				prg.pMatrixUniform = glContext.getUniformLocation(prg, 'uPMatrix');
 				prg.mvMatrixUniform = glContext.getUniformLocation(prg, 'uMVMatrix');
+				prg.nMatrixUniform  = glContext.getUniformLocation(prg, 'uNMatrix');
+
+				// Light
+				prg.lightPositionUniform       = glContext.getUniformLocation(prg, 'uLightPosition');
+				prg.shininessUniform           = glContext.getUniformLocation(prg, 'uShininess');
+			    prg.lightAmbientUniform        = glContext.getUniformLocation(prg, 'uLightAmbient');
+			    prg.materialDiffuseUniform     = glContext.getUniformLocation(prg, 'uMaterialDiffuse');
+			    prg.materialSpecularUniform    = glContext.getUniformLocation(prg, 'uMaterialSpecular');
 
 				midpoint.setupShader(prg);
 				sphere.setupShader(prg);
+			}
+
+			function initLights(){
+			    glContext.uniform3f(prg.lightPositionUniform, 1, 1, 1);
+			    glContext.uniform3f(prg.lightAmbientUniform,0.1,0.1,0.1);
+				glContext.uniform3f(prg.materialSpecularUniform, 0.5,0.5,0.5);
+				glContext.uniform3f(prg.materialDiffuseUniform, 0.8,0.3,0.3);
+			    glContext.uniform1f(prg.shininessUniform, 24.0);
 			}
 
 			function initBuffers()
@@ -81,6 +135,12 @@
 				mat4.identity(mvMatrix);
 				glContext.uniformMatrix4fv(prg.pMatrixUniform, false, pMatrix);
 				glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mvMatrix);
+
+				var nMatrix = mat4.create();
+			    mat4.copy(nMatrix, mvMatrix);
+			    mat4.invert(nMatrix, nMatrix);
+			    mat4.transpose(nMatrix, nMatrix);
+			    glContext.uniformMatrix4fv(prg.nMatrixUniform, false, nMatrix);
 
 				midpoint.render();
 
