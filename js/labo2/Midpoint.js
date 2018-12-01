@@ -28,21 +28,21 @@ class Midpoint
 
    initializeArrays()
    {
-     this.vertices = [];
-     this.colors = [];
-     this.indices = [];
-     this.normals = [];
-     this.verticesBuffer = null;
-     this.colorsBuffer = null;
-     this.indicesBuffer = null;
-     this.normalsBuffer = null;
+      this.vertices = [];
+      this.colors = [];
+      this.indices = [];
+      this.normals = [];
+      this.verticesBuffer = null;
+      this.colorsBuffer = null;
+      this.indicesBuffer = null;
+      this.normalsBuffer = null;
    }
 
    setSpheresCount(spheresCount)
    {
-     this.initializeArrays();
-     this.limit = this.computeLimit(spheresCount);
-     this.createGeometry();
+      this.initializeArrays();
+      this.limit = this.computeLimit(spheresCount);
+      this.createGeometry();
    }
 
    computeLimit(spheresCount)
@@ -149,7 +149,7 @@ class Midpoint
       prg.pointSize = glContext.getUniformLocation(prg, "uPointSize");
 
       prg.vertexNormalAttribute = glContext.getAttribLocation(prg, "aVertexNormal");
-	    glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
+	   glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
    }
 
    // To draw inside drawScene
