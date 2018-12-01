@@ -45,6 +45,21 @@ class Sphere {
         this.normalsBuffer = null;
     }
 
+    /**
+     * Set the subdivision argument for later build the geometry of the sphere
+     * @param {int} subdivision subdivision recursion level
+     */
+    setSubdivision(subdivision)
+    {
+      this.initializeArrays();
+      this.subdivision = subdivision;
+      this.createGeometry();
+    }
+
+    /**
+     * set the size of the radius of the sphere
+     * @param {float} sizeRation radius of the sphere
+     */
     setSizeRation(sizeRation)
     {
         this.initializeArrays();

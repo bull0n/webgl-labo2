@@ -157,7 +157,6 @@
 				midpoint.render();
 
 				let translationMat = mat4.create();
-				let homothety = [3., 3., 3.];
 
 				for(let i = 0;i < midpoint.vertices.length; i+=3)
 				{
@@ -166,7 +165,6 @@
 					mat4.identity(translationMat);
 					mat4.identity(mvMatrix);
 					mat4.translate(mvMatrix, translationMat, currentPos);
-					//mat4.identity(mvMatrix);
 
 					glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mvMatrix);
 					sphere.render();
@@ -182,25 +180,32 @@
 
 				document.querySelector('#sphere-radius').onchange();
 				document.querySelector('#nb-sphere').onchange();
+				//document.querySelector('#subdivision').onchange();
 			}
 
 				//EVENTS
 				document.addEventListener("DOMContentLoaded", function() {
 				let radiusInput =  document.querySelector('#sphere-radius');
 				let nbSphereInput = document.querySelector('#nb-sphere');
+				let sphereSubdivision = document.querySelector('#subdivision');
 
 				document.querySelector('#time-metronom').onchange = function(){
 					console.log('time');
 				};
 
-				nbSphereInput.onchange = function(){
+				nbSphereInput.onchange = function() {
 					midpoint.setSpheresCount(parseInt(this.value));
 				};
 
 				// sphere radius
-				radiusInput.onchange = function(event){
+				radiusInput.onchange = function() {
 					sphere.setSizeRation(this.value*2);
 				};
+
+				sphereSubdivision.onchange = function() {
+					console.log(this.value);
+					sphere.setSubdivision(this.value);
+				}
 			});
 		</script>
 	</head>
@@ -226,7 +231,13 @@
 		<div>
 			<label>
 				Temps du metronome
-				<input type="number" id="time-metronom" step="0.1" min="0.5" max="0.5" max="2"/>
+				<input type="number" id="time-metronom" step="0.1" min="0.5" max="2"/>
+			</label>
+		</div>
+		<div>
+			<label>
+				Subdivision de la sphère
+				<input type="range" min="1" max="6" id="subdivision" value="3" />
 			</label>
 		</div>
 		<canvas id="webgl-canvas" width="1000" height="1000">
