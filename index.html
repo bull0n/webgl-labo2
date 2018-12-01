@@ -94,8 +94,9 @@
 
 			// init sphere
 			var ratio = 0.5;
-			var subdivision = 0;
-			var sphere = new Sphere(ratio, subdivision);
+			var subdivision = 1;
+			var init_center = [0.0, 0.0, 0.0];
+			var sphere = new Sphere(init_center, ratio, subdivision);
 
 			function degToRad(degrees)
 			{
@@ -111,9 +112,9 @@
 				// Light
 				prg.lightPositionUniform       = glContext.getUniformLocation(prg, 'uLightPosition');
 				prg.shininessUniform           = glContext.getUniformLocation(prg, 'uShininess');
-		    prg.lightAmbientUniform        = glContext.getUniformLocation(prg, 'uLightAmbient');
-		    prg.materialDiffuseUniform     = glContext.getUniformLocation(prg, 'uMaterialDiffuse');
-		    prg.materialSpecularUniform    = glContext.getUniformLocation(prg, 'uMaterialSpecular');
+				prg.lightAmbientUniform        = glContext.getUniformLocation(prg, 'uLightAmbient');
+				prg.materialDiffuseUniform     = glContext.getUniformLocation(prg, 'uMaterialDiffuse');
+				prg.materialSpecularUniform    = glContext.getUniformLocation(prg, 'uMaterialSpecular');
 
 				midpoint.setupShader(prg);
 				sphere.setupShader(prg);
@@ -123,8 +124,8 @@
 			{
 			    glContext.uniform3f(prg.lightPositionUniform, 1, 1, 1);
 			    glContext.uniform3f(prg.lightAmbientUniform,0.1,0.1,0.1);
-					glContext.uniform3f(prg.materialSpecularUniform, 0.5,0.5,0.5);
-					glContext.uniform3f(prg.materialDiffuseUniform, 0.8,0.3,0.3);
+				glContext.uniform3f(prg.materialSpecularUniform, 0.5,0.5,0.5);
+				glContext.uniform3f(prg.materialDiffuseUniform, 0.8,0.3,0.3);
 			    glContext.uniform1f(prg.shininessUniform, 24.0);
 			}
 
@@ -148,10 +149,10 @@
 				glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mvMatrix);
 
 				var nMatrix = mat4.create();
-		    mat4.copy(nMatrix, mvMatrix);
-		    mat4.invert(nMatrix, nMatrix);
-		    mat4.transpose(nMatrix, nMatrix);
-		    glContext.uniformMatrix4fv(prg.nMatrixUniform, false, nMatrix);
+				mat4.copy(nMatrix, mvMatrix);
+				mat4.invert(nMatrix, nMatrix);
+				mat4.transpose(nMatrix, nMatrix);
+				glContext.uniformMatrix4fv(prg.nMatrixUniform, false, nMatrix);
 
 				midpoint.render();
 
@@ -183,8 +184,8 @@
 				document.querySelector('#nb-sphere').onchange();
 			}
 
-			//EVENTS
-			document.addEventListener("DOMContentLoaded", function() {
+				//EVENTS
+				document.addEventListener("DOMContentLoaded", function() {
 				let radiusInput =  document.querySelector('#sphere-radius');
 				let nbSphereInput = document.querySelector('#nb-sphere');
 
