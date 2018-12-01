@@ -15,9 +15,9 @@ class Sphere {
      * @param {*} size_ration size ratio of the sphere. Default value: 1
      * @param {*} subdivision times the sphere will be precise
      */
-    constructor(size_ration = 1.0, subdivision = 0.0)
+    constructor(center = [0.0, 0.0, 0.0],size_ration = 1.0, subdivision = 0.0)
     {
-        this.center = [0,0,-3];
+        this.center = center;
         this.size_ration = size_ration;
         this.subdivision = subdivision;
 
@@ -29,11 +29,11 @@ class Sphere {
      */
     initializeArrays()
     {
-        this.indexCnt = 0;
-        this.triangles = [];
+        this.triangles = [];    // used for icosahedron points generation
+        this.vertex = [];       // used for icosahedron points generation
+        this.indexCnt = 0;      // used for vertices generation
         this.vertices = [];
         this.indices = [];
-        this.vertex = [];
         this.colors =[];
         this.normals = [];
         this.vertexColor = [];
@@ -62,9 +62,9 @@ class Sphere {
      */
     setSizeRation(sizeRation)
     {
-      this.initializeArrays();
-      this.size_ration = sizeRation;
-      this.createGeometry();
+        this.initializeArrays();
+        this.size_ration = sizeRation;
+        this.createGeometry();
     }
 
     /**
@@ -121,7 +121,7 @@ class Sphere {
      */
     generate_vertex()
     {
-        for (var i = 0; i < this.triangles.length; i+=3){
+        for (let i = 0; i < this.triangles.length; i+=3){
             var v1 = [];
             var v2 = [];
             var v3 = [];
@@ -154,7 +154,7 @@ class Sphere {
      */
     static fromOneToFourTriangles(sphere, v1, v2, v3, depth)
     {
-        var v12 = [];   var v23 = [];   var v31 = [];   var i; var n;
+        var v12 = [];   var v23 = [];   var v31 = []; var n;
         if(depth == 0) {
             sphere.vertices.push(v1[0], v1[1], v1[2]);
             sphere.vertices.push(v2[0], v2[1], v2[2]);
@@ -166,7 +166,7 @@ class Sphere {
             n = Sphere.normalize(v3, sphere.size_ration);
             sphere.normals.push(n[0], n[1], n[2]);
 
-            for(var i = 0; i < 3; i++) {    // foreach vertex
+            for(let i = 0; i < 3; i++) {    // foreach vertex
                 // Add color
                 sphere.colors.push(sphere.vertexColor[0], sphere.vertexColor[1], sphere.vertexColor[2], sphere.vertexColor[3]);
             }
@@ -174,7 +174,7 @@ class Sphere {
             sphere.indices.push(sphere.indexCnt, sphere.indexCnt+1, sphere.indexCnt+2);
             sphere.indexCnt += 3;
         } else {
-            for (var i = 0; i < 3; i++) {
+            for (let i = 0; i < 3; i++) {
                 v12.push( (v1[i]+v2[i])/2.0 );
                 v23.push( (v2[i]+v3[i])/2.0 );
                 v31.push( (v3[i]+v1[i])/2.0 );
@@ -192,18 +192,18 @@ class Sphere {
 
     /**
      * Normalize a vector using the size ratio of a sphere
-     * @param {Array} v Vector to normalize
+     * @param {Array} base_vector Vector to normalize
      * @param {*} size_ration size ratio of the sphere
      */
-    static normalize(v, size_ration)
+    static normalize(base_vector, size_ration)
     {
-        var d = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-        if (d!=0.0) {
-            v[0]/=d / size_ration;
-            v[1]/=d / size_ration;
-            v[2]/=d / size_ration;
+        var d = Math.sqrt(base_vector[0]*base_vector[0] + base_vector[1]*base_vector[1] + base_vector[2]*base_vector[2]);
+        if (d != 0.0) {
+            base_vector[0] /= d / size_ration;
+            base_vector[1] /= d / size_ration;
+            base_vector[2] /= d / size_ration;
         }
-        return v;
+        return base_vector;
     }
 
     /**
@@ -231,14 +231,14 @@ class Sphere {
 
     /**
      * Diplace the sphere to a destination point.
-     * @param {*} v Destination vertex as array with 3 components
+     * @param {*} vertex Destination vertex as array with 3 components
      */
-    translate_to(v)
+    translate_to(vertex)
     {
-        for(var i=0; i < this.vertices.length; i+=3) {
-            this.vertices[i] += v[0];
-            this.vertices[i+1] += v[1];
-            this.vertices[i+2] += v[2];
+        for(let i=0; i < this.vertices.length; i+=3) {
+            this.vertices[i] += vertex[0];
+            this.vertices[i+1] += vertex[1];
+            this.vertices[i+2] += vertex[2];
         }
     }
 
@@ -265,7 +265,7 @@ class Sphere {
         glContext.enableVertexAttribArray(prg.colorAttribute);
 
         prg.vertexNormalAttribute = glContext.getAttribLocation(prg, "aVertexNormal");
-	      glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
+        glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
     }
 
     render()
