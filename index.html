@@ -97,8 +97,6 @@
 			var subdivision = 0;
 			var sphere = new Sphere(ratio, subdivision);
 
-			var sphereHomothety = 5;
-
 			function degToRad(degrees)
 			{
 				return (degrees * Math.PI / 180.0);
@@ -158,19 +156,16 @@
 				midpoint.render();
 
 				let translationMat = mat4.create();
-				let scaleMat = mat4.create();
-				let homothety = [3, 3, 3];
+				let homothety = [3., 3., 3.];
 
 				for(let i = 0;i < midpoint.vertices.length; i+=3)
 				{
 					let currentPos = [midpoint.vertices[i], midpoint.vertices[i+1], 0.0];
 
 					mat4.identity(translationMat);
-					//mat4.identity(mvMatrix);
-					mat4.identity(scaleMat);
-					//mat4.translate(mvMatrix, translationMat, currentPos);
-					mat4.scale(mvMatrix, scaleMat, homothety);
 					mat4.identity(mvMatrix);
+					mat4.translate(mvMatrix, translationMat, currentPos);
+					//mat4.identity(mvMatrix);
 
 					glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mvMatrix);
 					sphere.render();
@@ -203,8 +198,7 @@
 
 				// sphere radius
 				radiusInput.onchange = function(event){
-					//sphere.setSizeRation(this.value*2);
-					sphereHomothety = this.value;
+					sphere.setSizeRation(this.value*2);
 				};
 			});
 		</script>
