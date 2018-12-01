@@ -8,7 +8,8 @@
 		<script src='./js/webglTools.js'></script>
 		<script src='./js/labo2/Tools.js'></script>
 		<script src='./js/labo2/SimpleTriangle.js'></script>
-		<script src='./js/labo2/Midpoint.js'></script>
+		<!-- <script src='./js/labo2/Midpoint.js'></script> -->
+		<script src='./js/labo2/AnimatedMidpoint.js'></script>
 		<script src='./js/labo2/Sphere.js'></script>
 		<script id="shader-vs" type="x-shader/x-vertex">
 		uniform mat4 uMVMatrix;
@@ -91,7 +92,7 @@
 			var smoothness = 1;
 			var depth = -3.0;
 			var sphereCount = 2;
-			var midpoint = new Midpoint(ax, bx, h, displacement, sphereCount, smoothness, depth);
+			var midpoint = new AnimatedMidpoint(ax, bx, h, displacement, sphereCount, smoothness, depth);
 
 			// init sphere
 			var ratio = 0.5;
@@ -200,15 +201,18 @@
 				let radiusInput =  document.querySelector('#sphere-radius');
 				let nbSphereInput = document.querySelector('#nb-sphere');
 				let sphereSubdivision = document.querySelector('#subdivision');
+				let metronomTime = document.querySelector('#time-metronom');
 				let buttonStop = document.querySelector('#stop-timer');
 				let buttonStart = document.querySelector('#start-timer');
 
-				document.querySelector('#time-metronom').onchange = function(){
+				//timer changed
+				metronomTime.onchange = function(){
 					clearInterval(timer);
 					timeTimer = this.value*1000;
 					timer = setInterval(timerTick, timeTimer);
 				};
 
+				// nb sphere changed
 				nbSphereInput.onchange = function() {
 					midpoint.setSpheresCount(parseInt(this.value));
 				};
@@ -218,15 +222,18 @@
 					sphere.setSizeRation(this.value*2);
 				};
 
+				// subdivision changed
 				sphereSubdivision.onchange = function() {
 					sphere.setSubdivision(this.value);
 				};
 
+				// stop timer
 				buttonStop.onclick = function()
 				{
 						clearInterval(timer);
 				}
 
+				//start timer
 				buttonStart.onclick = function()
 				{
 					timer = setInterval(timerTick, timeTimer)
