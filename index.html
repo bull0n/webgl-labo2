@@ -79,6 +79,7 @@
 		}
 		</script>
 		<script>
+			// projection matrix
 			var mvMatrix = mat4.create();
 			var pMatrix = mat4.create();
 
@@ -96,6 +97,10 @@
 			var ratio = 0.5;
 			var subdivision = 0;
 			var sphere = new Sphere(ratio, subdivision);
+
+			// timer
+			var timeTimer = 1000;
+			var timer = setInterval(timerTick, timeTimer);
 
 			function degToRad(degrees)
 			{
@@ -179,7 +184,15 @@
 
 				document.querySelector('#sphere-radius').onchange();
 				document.querySelector('#nb-sphere').onchange();
-				//document.querySelector('#subdivision').onchange();
+				document.querySelector('#subdivision').onchange();
+			}
+
+			/**
+			 * action on timer tick
+			 */
+			function timerTick()
+			{
+					console.log("timer");
 			}
 
 			//EVENTS
@@ -187,9 +200,13 @@
 				let radiusInput =  document.querySelector('#sphere-radius');
 				let nbSphereInput = document.querySelector('#nb-sphere');
 				let sphereSubdivision = document.querySelector('#subdivision');
+				let buttonStop = document.querySelector('#stop-timer');
+				let buttonStart = document.querySelector('#start-timer');
 
 				document.querySelector('#time-metronom').onchange = function(){
-					console.log('time');
+					clearInterval(timer);
+					timeTimer = this.value*1000;
+					timer = setInterval(timerTick, timeTimer);
 				};
 
 				nbSphereInput.onchange = function() {
@@ -202,8 +219,17 @@
 				};
 
 				sphereSubdivision.onchange = function() {
-					console.log(this.value);
 					sphere.setSubdivision(this.value);
+				};
+
+				buttonStop.onclick = function()
+				{
+						clearInterval(timer);
+				}
+
+				buttonStart.onclick = function()
+				{
+					timer = setInterval(timerTick, timeTimer)
 				}
 			});
 		</script>
@@ -230,7 +256,7 @@
 		<div>
 			<label>
 				Temps du metronome
-				<input type="number" id="time-metronom" step="0.1" min="0.5" max="2"/>
+				<input type="number" id="time-metronom" step="0.1" min="0.5" max="2" value="1"/>
 			</label>
 		</div>
 		<div>
@@ -238,6 +264,10 @@
 				Subdivision de la sphère
 				<input type="range" min="1" max="6" id="subdivision" value="3" />
 			</label>
+		</div>
+		<div>
+			<button id="stop-timer">Stop timer</button>
+			<button id="start-timer">Start timer</button>
 		</div>
 		<canvas id="webgl-canvas" width="1000" height="1000">
 			HTML5 is not supported

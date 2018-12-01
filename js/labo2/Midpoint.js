@@ -22,8 +22,7 @@ class Midpoint
       this.limit = this.computeLimit(spheresCount);
       this.depth = depth;
 
-      this.initializeArrays()
-      this.size = 5;                // Useless, unless we draw points...
+      this.initializeArrays();
    }
 
    initializeArrays()
