@@ -159,6 +159,7 @@
 		    mat4.transpose(nMatrix, nMatrix);
 		    glContext.uniformMatrix4fv(prg.nMatrixUniform, false, nMatrix);
 
+				midpoint.tick();
 				midpoint.render();
 
 				let translationMat = mat4.create();
@@ -186,6 +187,7 @@
 				document.querySelector('#sphere-radius').onchange();
 				document.querySelector('#nb-sphere').onchange();
 				document.querySelector('#subdivision').onchange();
+				document.querySelector('#time-metronom').onchange();
 			}
 
 			/**
@@ -193,7 +195,7 @@
 			 */
 			function timerTick()
 			{
-					console.log("timer");
+					midpoint.setNewTarget();
 			}
 
 			//EVENTS
@@ -263,7 +265,7 @@
 		<div>
 			<label>
 				Temps du metronome
-				<input type="number" id="time-metronom" step="0.1" min="0.5" max="2" value="1"/>
+				<input type="number" id="time-metronom" step="0.1" min="0.5" max="5" value="1"/>
 			</label>
 		</div>
 		<div>
