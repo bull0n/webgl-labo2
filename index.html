@@ -64,7 +64,7 @@
 			vec3 L = normalize(vLightRay);
 			vec3 N = normalize(vNormal);
 			float lambertTerm = dot(N,-L);
-			vec3 finalColor = uLightAmbient;
+			vec3 finalColor = vVertexColor.xyz;
 
 			if(lambertTerm > 0.0)
 			{
@@ -73,10 +73,6 @@
 				vec3 R = reflect(L, N);
 				float specular = pow( max(dot(R, E), 0.0), uShininess);
 				finalColor += uMaterialSpecular * specular;
-			}
-			else
-			{
-				finalColor.xyz = vVertexColor.xyz;
 			}
 
 			gl_FragColor = vec4(finalColor, 1.0);
@@ -134,11 +130,11 @@
 
 			function initLights()
 			{
-		    glContext.uniform3f(prg.lightPositionUniform, 1, 1, 1);
-		    glContext.uniform3f(prg.lightAmbientUniform,0.1,0.1,0.1);
+				glContext.uniform3f(prg.lightPositionUniform, 1, 1, 1);
+				glContext.uniform3f(prg.lightAmbientUniform,0.1,0.1,0.1);
 				glContext.uniform3f(prg.materialSpecularUniform, 0.5,0.5,0.5);
 				glContext.uniform3f(prg.materialDiffuseUniform, 0.3,0.3,0.3);
-		    glContext.uniform1f(prg.shininessUniform, 24.0);
+				glContext.uniform1f(prg.shininessUniform, 24.0);
 			}
 
 			function initBuffers()
