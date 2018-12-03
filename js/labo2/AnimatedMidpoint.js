@@ -59,7 +59,7 @@ class AnimatedMidpoint
 
    /**
     * Set the number of sphere (ie number of point) for the midpoint algorithm
-    * @param {int} spheresCount 
+    * @param {int} spheresCount
     */
    setSpheresCount(spheresCount)
    {
@@ -69,7 +69,7 @@ class AnimatedMidpoint
 
    /**
     * Compute the minimum limit between two sphere using the length of the midpoint a and b point
-    * @param {int} spheresCount 
+    * @param {int} spheresCount
     */
    computeLimit(spheresCount)
    {
@@ -102,7 +102,7 @@ class AnimatedMidpoint
 
    /**
     * push all points into vertices, colors, normals and indices
-    * @param {Array} points 
+    * @param {Array} points
     */
    pushPointsIntoVertices(points)
    {
@@ -134,7 +134,7 @@ class AnimatedMidpoint
 
    /**
     * call on every tick to reach the target
-    * @param {float} deltaY 
+    * @param {float} deltaY
     */
    tick(deltaY = 0.005)
    {
@@ -189,7 +189,7 @@ class AnimatedMidpoint
     * Compute points between two others points
     * @param {Array} a position A (3D)
     * @param {Array} b position B (3D)
-    * @param {float} displacement 
+    * @param {float} displacement
     * @param {Array} points Array of all points
     */
    recursiveCompute(a, b, displacement, points)
@@ -231,9 +231,9 @@ class AnimatedMidpoint
 
    /**
     * Compute Y for midpoint algo
-    * @param {Array} a 
-    * @param {Array} b 
-    * @param {float} displacement 
+    * @param {Array} a
+    * @param {Array} b
+    * @param {float} displacement
     */
    computeY(a, b, displacement)
    {
