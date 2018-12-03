@@ -46,7 +46,7 @@ class Midpoint
 
    /**
     * Set the number of sphere (ie number of point) for the midpoint algorithm
-    * @param {int} spheresCount 
+    * @param {int} spheresCount
     */
    setSpheresCount(spheresCount)
    {
@@ -57,7 +57,7 @@ class Midpoint
 
    /**
     * Compute the minimum limit between two sphere using the length of the midpoint a and b point
-    * @param {int} spheresCount 
+    * @param {int} spheresCount
     */
    computeLimit(spheresCount)
    {
@@ -113,7 +113,7 @@ class Midpoint
     * Compute points between two others points
     * @param {Array} a position A (3D)
     * @param {Array} b position B (3D)
-    * @param {float} displacement 
+    * @param {float} displacement
     * @param {Array} points Array of all points
     */
    recursiveCompute(a, b, displacement)
@@ -157,9 +157,9 @@ class Midpoint
 
    /**
     * Compute Y for midpoint algo
-    * @param {Array} a 
-    * @param {Array} b 
-    * @param {float} displacement 
+    * @param {Array} a
+    * @param {Array} b
+    * @param {float} displacement
     */
    computeY(a, b, displacement)
    {
