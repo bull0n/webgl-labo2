@@ -84,7 +84,7 @@
 			// projection matrix
 			var mvMatrix = mat4.create();
 			var pMatrix = mat4.create();
-			var cameraZ = -3.;
+			var cameraZ = -3.0;
 
 			// init midPoint
 			var ax = -1;
@@ -92,12 +92,12 @@
 			var h = 0.0;
 			var displacement = 0.5;
 			var smoothness = 1;
-			var depth = 0;
+			var depth = 0.0;
 			var sphereCount = 2;
 			var midpoint = new AnimatedMidpoint(ax, bx, h, displacement, sphereCount, smoothness, depth);
 
 			// init sphere
-			var ratio = 0.5;
+			var ratio = 1;
 			var subdivision = 1;
 			var init_center = [0.0, 0.0, 0.0];
 			var sphere = new Sphere(init_center, ratio, subdivision);
@@ -106,8 +106,7 @@
 			var timeTimer = 1000;
 			var timer = setInterval(timerTick, timeTimer);
 
-			function degToRad(degrees)
-			{
+			function degToRad(degrees) {
 				return (degrees * Math.PI / 180.0);
 			}
 
@@ -149,11 +148,9 @@
 				glContext.disable(glContext.DEPTH_TEST);
 				glContext.clear(glContext.COLOR_BUFFER_BIT | glContext.DEPTH_BUFFER_BIT);
 				glContext.viewport(0, 0, c_width, c_height);
-
 				camera();
 
 				mat4.perspective(pMatrix, degToRad(60.0), c_width / c_height, 0.1, 1000.0);
-				// mat4.identity(mvMatrix);
 
 				var nMatrix = mat4.create();
 				mat4.copy(nMatrix, mvMatrix);
@@ -173,7 +170,7 @@
 					mat4.translate(translationMat, translationMat, currentPos);
 
 					glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mat4.mul(mat4.create(), mvMatrix, translationMat));
-					// glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mat4.mul(mat4.create(), translationMat, mvMatrix));
+					//glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mat4.mul(mat4.create(), translationMat, mvMatrix));
 					sphere.render();
 				}
 			}
@@ -197,14 +194,14 @@
 			 */
 			function timerTick()
 			{
-					midpoint.setNewTarget();
+				midpoint.setNewTarget();
 			}
 
 			function camera()
 			{
 				translationMat = mat4.create();
 				mat4.identity(translationMat);
-				var tx = 0;
+				var tx = 0.0;
 				var ty = 0.0;
 				var tz = cameraZ;
 				mat4.translate(translationMat,translationMat, [tx, ty, tz]);
@@ -246,14 +243,12 @@
 				};
 
 				// stop timer
-				buttonStop.onclick = function()
-				{
-						clearInterval(timer);
+				buttonStop.onclick = function() {
+					clearInterval(timer);
 				}
 
 				//start timer
-				buttonStart.onclick = function()
-				{
+				buttonStart.onclick = function() {
 					timer = setInterval(timerTick, timeTimer)
 				}
 			});
