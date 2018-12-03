@@ -150,7 +150,7 @@ class Sphere {
      * @param {Array} v1 Vertex v1
      * @param {Array} v2 Vertex v2
      * @param {Array} v3 Vertex v3
-     * @param {*} depth remaining subdivisons step
+     * @param {int} depth remaining subdivisons step
      */
     static fromOneToFourTriangles(sphere, v1, v2, v3, depth)
     {
@@ -193,7 +193,7 @@ class Sphere {
     /**
      * Normalize a vector using the size ratio of a sphere
      * @param {Array} base_vector Vector to normalize
-     * @param {*} size_ration size ratio of the sphere
+     * @param {float} size_ration size ratio of the sphere
      */
     static normalize(base_vector, size_ration)
     {
@@ -231,7 +231,7 @@ class Sphere {
 
     /**
      * Diplace the sphere to a destination point.
-     * @param {*} vertex Destination vertex as array with 3 components
+     * @param {Array} vertex Destination vertex as array with 3 components
      */
     translate_to(vertex)
     {
@@ -242,6 +242,10 @@ class Sphere {
         }
     }
 
+    /**
+    * Create the geometry of the object
+    * To call inside initBuffer
+    */
     createGeometry()
     {
         this.icosahedron_vertex();
@@ -255,6 +259,10 @@ class Sphere {
         this.normalsBuffer = getVertexBufferWithVertices(this.normals);
     }
 
+    /**
+    * To call inside initShaderParameters
+    * @param {Program} prg Program
+    */
     setupShader(prg)
     {
         this.prg = prg;
@@ -268,6 +276,9 @@ class Sphere {
         glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
     }
 
+    /**
+    * To draw inside drawScene
+    */
     render()
     {
         let prg = this.prg;

@@ -132,8 +132,8 @@
 			{
 		    glContext.uniform3f(prg.lightPositionUniform, 1, 1, 1);
 		    glContext.uniform3f(prg.lightAmbientUniform,0.1,0.1,0.1);
-				glContext.uniform3f(prg.materialSpecularUniform, 0.5,0.5,0.5);
-				glContext.uniform3f(prg.materialDiffuseUniform, 0.8,0.3,0.3);
+			glContext.uniform3f(prg.materialSpecularUniform, 0.5,0.5,0.5);
+			glContext.uniform3f(prg.materialDiffuseUniform, 0.3,0.3,0.3);
 		    glContext.uniform1f(prg.shininessUniform, 24.0);
 			}
 
@@ -172,7 +172,7 @@
 					mat4.identity(translationMat);
 					mat4.translate(translationMat, translationMat, currentPos);
 
-						glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mat4.mul(mat4.create(), mvMatrix, translationMat));
+					glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mat4.mul(mat4.create(), mvMatrix, translationMat));
 					// glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mat4.mul(mat4.create(), translationMat, mvMatrix));
 					sphere.render();
 				}
@@ -182,6 +182,7 @@
 			{
 				glContext = getGLContext('webgl-canvas');
 				initProgram();
+				initLights();
 				initBuffers();
 				renderLoop();
 

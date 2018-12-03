@@ -6,12 +6,16 @@ const Z = 2;
 
 class Midpoint
 {
-   // ax: position of A on X axis
-   // bx: position of B on X axis
-   // displacement: value of displacement
-   // smooth: smoothness of the midpoint algo.
-   // spheresCount: how many sphere to show (2,3,5,9,17,33, etc... )
-   // depth: depth of all the points (Z Axis)
+   /**
+    * Constructor of the MidpointAlgorithm class
+    * @param {float} ax position of A on X axis
+    * @param {float} bx position of B on X axis
+    * @param {float} h high of the points (general value)
+    * @param {float} displacement value of displacement
+    * @param {int} spheresCount how many sphere to show (2,3,5,9,17,33, etc... )
+    * @param {float} smooth smoothness of the midpoint algo.
+    * @param {float} depth depth of all the points (Z Axis)
+    */
    constructor(ax, bx, h, displacement, spheresCount = 4,  smooth = 1.0, depth = -3.0)
    {
       this.ax = ax;
@@ -25,6 +29,9 @@ class Midpoint
       this.initializeArrays();
    }
 
+   /**
+    * Initialize all arrays and buffers
+    */
    initializeArrays()
    {
       this.vertices = [];
@@ -37,6 +44,10 @@ class Midpoint
       this.normalsBuffer = null;
    }
 
+   /**
+    * Set the number of sphere (ie number of point) for the midpoint algorithm
+    * @param {int} spheresCount 
+    */
    setSpheresCount(spheresCount)
    {
       this.initializeArrays();
@@ -44,13 +55,19 @@ class Midpoint
       this.createGeometry();
    }
 
+   /**
+    * Compute the minimum limit between two sphere using the length of the midpoint a and b point
+    * @param {int} spheresCount 
+    */
    computeLimit(spheresCount)
    {
       return Math.abs(this.ax - this.bx) / (1.0 * spheresCount - 1.0);  // 1.0 * ... -> force cast to double/float
    }
 
-   // Create the geometry of the object
-   // To call inside initBuffer
+   /**
+    * Create the geometry of the object
+    * To call inside initBuffer
+    */
    createGeometry()
    {
       this.executeMidpoint();
@@ -62,7 +79,9 @@ class Midpoint
       this.normalsBuffer = getVertexBufferWithVertices(this.normals);
    }
 
-   // Execute the midpoint algo.
+   /**
+    * Get buffer with vertices
+    */
    executeMidpoint()
    {
       let vertices = this.vertices;
@@ -90,7 +109,13 @@ class Midpoint
       normals.push(0.0, 0.0, 0.0);
    }
 
-   // Compute points between two others points (recursively)
+   /**
+    * Compute points between two others points
+    * @param {Array} a position A (3D)
+    * @param {Array} b position B (3D)
+    * @param {float} displacement 
+    * @param {Array} points Array of all points
+    */
    recursiveCompute(a, b, displacement)
    {
       let ax = a[X];
@@ -121,14 +146,21 @@ class Midpoint
       }
    }
 
-   // Initialize Y for the two points of each side (A and B)
+   /**
+    * Initialize Y for the two points of each side (A and B)
+    */
    initializeY()
    {
       let sign = Math.random() < 0.5 ? -1.0: 1.0;
       return this.h + sign * random(0, this.displacement / 2.0);
    }
 
-   // Compute Y for midpoint algo.
+   /**
+    * Compute Y for midpoint algo
+    * @param {Array} a 
+    * @param {Array} b 
+    * @param {float} displacement 
+    */
    computeY(a, b, displacement)
    {
       let sign = Math.random() < 0.5 ? -1.0: 1.0;
@@ -136,7 +168,10 @@ class Midpoint
       return averageY + sign * random(0, displacement / 2.0);
    }
 
-   // To call inside initShaderParameters
+   /**
+    * To call inside initShaderParameters
+    * @param {Program} prg Program
+    */
    setupShader(prg)
    {
       this.prg = prg;
@@ -151,7 +186,9 @@ class Midpoint
 	   glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
    }
 
-   // To draw inside drawScene
+   /**
+    * To draw inside drawScene
+    */
    render()
    {
       let prg = this.prg;

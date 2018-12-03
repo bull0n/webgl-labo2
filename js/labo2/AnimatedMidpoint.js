@@ -4,6 +4,12 @@ const X = 0;
 const Y = 1;
 const Z = 2;
 
+/**
+ * Return if two numbers are equal using a precision factor
+ * @param {float} a any float value
+ * @param {float} b any float value
+ * @param {float} epsilon precision the result
+ */
 function doubleEqual(a, b, epsilon = 0.01)
 {
 	return Math.abs(a - b) <= epsilon;
@@ -11,12 +17,16 @@ function doubleEqual(a, b, epsilon = 0.01)
 
 class AnimatedMidpoint
 {
-   // ax: position of A on X axis
-   // bx: position of B on X axis
-   // displacement: value of displacement
-   // smooth: smoothness of the midpoint algo.
-   // spheresCount: how many sphere to show (2,3,5,9,17,33, etc... )
-   // depth: depth of all the points (Z Axis)
+   /**
+    * Constructor of the MidpointAlgorithm class
+    * @param {float} ax position of A on X axis
+    * @param {float} bx position of B on X axis
+    * @param {float} h high of the points (general value)
+    * @param {float} displacement value of displacement
+    * @param {int} spheresCount how many sphere to show (2,3,5,9,17,33, etc... )
+    * @param {float} smooth smoothness of the midpoint algo.
+    * @param {float} depth depth of all the points (Z Axis)
+    */
    constructor(ax, bx, h, displacement, spheresCount = 4,  smooth = 1.0, depth = -3.0)
    {
       this.ax = ax;
@@ -31,32 +41,45 @@ class AnimatedMidpoint
       this.initializeArrays();
    }
 
+   /**
+    * Initialize all arrays and buffers
+    */
    initializeArrays()
    {
-     this.vertices = [];
-     this.colors = [];
-     this.indices = [];
-     this.normals = [];
-     this.target = null;
-     this.verticesBuffer = null;
-     this.colorsBuffer = null;
-     this.indicesBuffer = null;
-     this.normalsBuffer = null;
+      this.vertices = [];
+      this.colors = [];
+      this.indices = [];
+      this.normals = [];
+      this.target = null;
+      this.verticesBuffer = null;
+      this.colorsBuffer = null;
+      this.indicesBuffer = null;
+      this.normalsBuffer = null;
    }
 
+   /**
+    * Set the number of sphere (ie number of point) for the midpoint algorithm
+    * @param {int} spheresCount 
+    */
    setSpheresCount(spheresCount)
    {
-     this.limit = this.computeLimit(spheresCount);
-     this.createGeometry();
+      this.limit = this.computeLimit(spheresCount);
+      this.createGeometry();
    }
 
+   /**
+    * Compute the minimum limit between two sphere using the length of the midpoint a and b point
+    * @param {int} spheresCount 
+    */
    computeLimit(spheresCount)
    {
       return Math.abs(this.ax - this.bx) / (1.0 * spheresCount - 1.0);  // 1.0 * ... -> force cast to double/float
    }
 
-   // Create the geometry of the object
-   // To call inside initBuffer
+   /**
+    * Create the geometry of the object
+    * To call inside initBuffer
+    */
    createGeometry()
    {
       let points = this.executeMidpoint();
@@ -66,70 +89,83 @@ class AnimatedMidpoint
       this.getBufferWithVertices();
    }
 
+   /**
+    * Get buffer with vertices
+    */
    getBufferWithVertices()
    {
-     this.verticesBuffer = getVertexBufferWithVertices(this.vertices);
-     this.colorsBuffer  = getVertexBufferWithVertices(this.colors);
-     this.indicesBuffer  = getIndexBufferWithIndices(this.indices);
-     this.normalsBuffer = getVertexBufferWithVertices(this.normals);
+      this.verticesBuffer = getVertexBufferWithVertices(this.vertices);
+      this.colorsBuffer  = getVertexBufferWithVertices(this.colors);
+      this.indicesBuffer  = getIndexBufferWithIndices(this.indices);
+      this.normalsBuffer = getVertexBufferWithVertices(this.normals);
    }
 
-   // push all points into vertices, colors, normals and indices
+   /**
+    * push all points into vertices, colors, normals and indices
+    * @param {Array} points 
+    */
    pushPointsIntoVertices(points)
    {
-     this.vertices = [];
-     this.colors = [];
-     this.normales = [];
-     this.indices = [];
+      this.vertices = [];
+      this.colors = [];
+      this.normales = [];
+      this.indices = [];
 
-     for(let i = 0; i < points.length; i += 3)
-     {
-       this.vertices.push(points[i]);
-       this.vertices.push(points[i+1]);
-       this.vertices.push(points[i+2]);
+      for(let i = 0; i < points.length; i += 3)
+      {
+         this.vertices.push(points[i]);
+         this.vertices.push(points[i+1]);
+         this.vertices.push(points[i+2]);
 
-       // colors and normales are always the same
-       this.colors.push(this.color[0], this.color[1], this.color[2], 1.0);
-       this.normals.push(0.0,0.0,0.0);
-       this.indices.push(this.indices.length);
-     }
+         // colors and normales are always the same
+         this.colors.push(this.color[0], this.color[1], this.color[2], 1.0);
+         this.normals.push(0.0,0.0,0.0);
+         this.indices.push(this.indices.length);
+      }
    }
 
-   // set a new target to reach, new random midpoint
+   /**
+    * set a new target to reach, new random midpoint
+    */
    setNewTarget()
    {
-     this.target = this.executeMidpoint();
+      this.target = this.executeMidpoint();
    }
 
-   // call on every tick to reach the target
+   /**
+    * call on every tick to reach the target
+    * @param {float} deltaY 
+    */
    tick(deltaY = 0.005)
    {
-     // adjust every points Y coordinate if a target is set
-     for(let i = 1; i < this.vertices.length && this.target !== null; i += 3)
-     {
-       let y = this.vertices[i];
-       let targetY = this.target[i];
-       let deltaYTemp = deltaY;
+      // adjust every points Y coordinate if a target is set
+      for(let i = 1; i < this.vertices.length && this.target !== null; i += 3)
+      {
+         let y = this.vertices[i];
+         let targetY = this.target[i];
+         let deltaYTemp = deltaY;
 
-       // if equal, do not change point, otherwise adjust Y
-       if(!doubleEqual(y, targetY, deltaY*2))
-       {
-         // if ball has to get lower
-         if(y > targetY)
+         // if equal, do not change point, otherwise adjust Y
+         if(!doubleEqual(y, targetY, deltaY*2))
          {
-           deltaYTemp *= -1.0;
+            // if ball has to get lower
+            if(y > targetY)
+            {
+            deltaYTemp *= -1.0;
+            }
+
+            y += deltaYTemp;
+
+            this.vertices[i] = y;
          }
+      }
 
-         y += deltaYTemp;
-
-         this.vertices[i] = y;
-       }
-     }
-
-     this.verticesBuffer = getVertexBufferWithVertices(this.vertices);
+      this.verticesBuffer = getVertexBufferWithVertices(this.vertices);
    }
 
-   // Execute the midpoint algo.
+   /**
+    * Execute the midpoint algo
+    */
    executeMidpoint()
    {
       let points = [];
@@ -149,7 +185,13 @@ class AnimatedMidpoint
       return points;
    }
 
-   // Compute points between two others points (recursively)
+   /**
+    * Compute points between two others points
+    * @param {Array} a position A (3D)
+    * @param {Array} b position B (3D)
+    * @param {float} displacement 
+    * @param {Array} points Array of all points
+    */
    recursiveCompute(a, b, displacement, points)
    {
       let ax = a[X];
@@ -177,7 +219,9 @@ class AnimatedMidpoint
       }
    }
 
-   // Initialize Y for the two points of each side (A and B)
+   /**
+    * Initialize Y for the two points of each side (A and B)
+    */
    initializeY()
    {
       let sign = Math.random() < 0.5 ? -1.0: 1.0;
@@ -185,7 +229,12 @@ class AnimatedMidpoint
       return this.h + sign * random(0, this.displacement / 2.0);
    }
 
-   // Compute Y for midpoint algo.
+   /**
+    * Compute Y for midpoint algo
+    * @param {Array} a 
+    * @param {Array} b 
+    * @param {float} displacement 
+    */
    computeY(a, b, displacement)
    {
       let sign = Math.random() < 0.5 ? -1.0: 1.0;
@@ -194,7 +243,10 @@ class AnimatedMidpoint
       return averageY + sign * random(0, displacement / 2.0);
    }
 
-   // To call inside initShaderParameters
+   /**
+    * To call inside initShaderParameters
+    * @param {Program} prg Program
+    */
    setupShader(prg)
    {
       this.prg = prg;
@@ -206,10 +258,12 @@ class AnimatedMidpoint
       prg.pointSize = glContext.getUniformLocation(prg, "uPointSize");
 
       prg.vertexNormalAttribute = glContext.getAttribLocation(prg, "aVertexNormal");
-	    glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
+	   glContext.enableVertexAttribArray(prg.vertexNormalAttribute);
    }
 
-   // To draw inside drawScene
+   /**
+    * To draw inside drawScene
+    */
    render()
    {
       let prg = this.prg;
