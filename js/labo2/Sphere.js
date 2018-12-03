@@ -15,7 +15,7 @@ class Sphere {
      * @param {*} size_ration size ratio of the sphere. Default value: 1
      * @param {*} subdivision times the sphere will be precise
      */
-    constructor(center = [0.0, 0.0, 0.0], size_ration = 1.0, subdivision = 0.0)
+    constructor(center = [0.0, 0.0, 0.0], subdivision = 0.0, size_ration = 1.0)
     {
         this.center = center;
         this.size_ration = size_ration;
@@ -38,6 +38,26 @@ class Sphere {
         this.normals = [];
         this.vertexColor = [];
         this.vertexColor.push(0.7, 0.7, 0.0, 1.0);
+
+        if(this.verticesBuffer)
+        {
+          glContext.deleteBuffer(this.verticesBuffer);
+        }
+
+        if(this.indicesBuffer)
+        {
+          glContext.deleteBuffer(this.indicesBuffer);
+        }
+
+        if(this.normalsBuffer)
+        {
+          glContext.deleteBuffer(this.normalsBuffer);
+        }
+
+        if(this.colorsBuffer)
+        {
+          glContext.deleteBuffer(this.colorsBuffer);
+        }
 
         this.verticesBuffer = null;
         this.colorsBuffer = null;
@@ -154,7 +174,6 @@ class Sphere {
      */
     fromOneToFourTriangles(v1, v2, v3, depth)
     {
-      console.log('ici');
         var v12 = [];   var v23 = [];   var v31 = []; var n;
         if(depth == 0) {
             this.vertices.push(v1[0], v1[1], v1[2]);
@@ -197,9 +216,9 @@ class Sphere {
     {
         var d = Math.sqrt(vector[0]*vector[0] + vector[1]*vector[1] + vector[2]*vector[2]);
         if (d != 0.0) {
-            vector[0] /= d * size_ration;
-            vector[1] /= d * size_ration;
-            vector[2] /= d * size_ration;
+            vector[0] /= d;
+            vector[1] /= d;
+            vector[2] /= d;
         }
         return vector;
     }
@@ -255,8 +274,6 @@ class Sphere {
         this.colorsBuffer  = getVertexBufferWithVertices(this.colors);
         this.indicesBuffer  = getIndexBufferWithIndices(this.indices);
         this.normalsBuffer = getVertexBufferWithVertices(this.normals);
-
-        console.log(this.vertices)
     }
 
     /**

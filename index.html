@@ -15,6 +15,7 @@
 		uniform mat4 uMVMatrix;
 		uniform mat4 uPMatrix;
 		uniform mat4 uTranslationMatrix;
+		uniform mat4 uScaleMatrix;
 		attribute vec3 aVertexPosition;
 		attribute vec4 aVertexColor;
 		attribute vec3 aVertexNormal;
@@ -40,7 +41,7 @@
 			vec4 light = vec4(uLightPosition,1.0);
 			vLightRay = vertex.xyz - light.xyz;
 			vEyeVec = -vec3(vertex.xyz);
-			gl_Position = uPMatrix * uTranslationMatrix * vertex;
+			gl_Position = uPMatrix * uScaleMatrix * uTranslationMatrix * vertex;
 		}
 		</script>
 		<script id="shader-fs" type="x-shader/x-fragment">
@@ -102,7 +103,7 @@
 			var ratio = 1.0;
 			var subdivision = 1;
 			var init_center = [0.0, 0.0, 0.0];
-			var sphere = new Sphere(init_center, ratio, subdivision);
+			var sphere = new Sphere(init_center, subdivision);
 
 			// timer
 			var timeTimer = 1000;
@@ -118,6 +119,7 @@
 				prg.mvMatrixUniform = glContext.getUniformLocation(prg, 'uMVMatrix');
 				prg.nMatrixUniform  = glContext.getUniformLocation(prg, 'uNMatrix');
 				prg.translationMatrixUniform  = glContext.getUniformLocation(prg, 'uTranslationMatrix');
+				prg.scaleMatrixUniform  = glContext.getUniformLocation(prg, 'uScaleMatrix');
 
 				// Light
 				prg.lightPositionUniform       = glContext.getUniformLocation(prg, 'uLightPosition');
@@ -163,17 +165,31 @@
 
 				glContext.uniformMatrix4fv(prg.translationMatrixUniform, false, mat4.identity(mat4.create()));
 
+				let translationMat = mat4.create();
+				let scaleMat = mat4.create();
+
+				// init translate mat for midpoint and sphere translation and scale
+				mat4.identity(translationMat);
+				mat4.identity(scaleMat);
+
+				glContext.uniformMatrix4fv(prg.scaleMatrixUniform, false, scaleMat);
+				glContext.uniformMatrix4fv(prg.translationMatrixUniform, false, translationMat);
+
+				// draw the midpoing (no scale no translatio)
 				midpoint.tick();
 				midpoint.render();
 
-				let translationMat = mat4.create();
+				// draw the sphere scaled and translated
 				for(let i = 0; i < midpoint.vertices.length; i+=3)
 				{
-					let currentPos = vec3.fromValues(midpoint.vertices[i], midpoint.vertices[i+1], midpoint.vertices[i+2] - 3);
+					let currentPos = vec3.fromValues(midpoint.vertices[i], midpoint.vertices[i+1], midpoint.vertices[i+2]-3);
 
 					mat4.identity(translationMat);
+					mat4.identity(scaleMat);
 					mat4.translate(translationMat, translationMat, currentPos);
+					mat4.scale(translationMat, translationMat, [ratio,ratio,ratio]);
 
+					glContext.uniformMatrix4fv(prg.scaleMatrixUniform, false, scaleMat);
 					glContext.uniformMatrix4fv(prg.translationMatrixUniform, false, translationMat);
 					glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mvMatrix);
 					sphere.render();
@@ -188,9 +204,9 @@
 				initBuffers();
 				renderLoop();
 
-				//document.querySelector('#sphere-radius').onchange();
+				document.querySelector('#sphere-radius').onchange();
 				document.querySelector('#nb-sphere').onchange();
-				//document.querySelector('#subdivision').onchange();
+				document.querySelector('#subdivision').onchange();
 				document.querySelector('#time-metronom').onchange();
 			}
 
@@ -239,7 +255,8 @@
 
 				// sphere radius
 				radiusInput.onchange = function() {
-					sphere.setSizeRation(this.value*2);
+					//sphere.setSizeRation(this.value*2);
+					ratio = this.value;
 				};
 
 				// subdivision changed
