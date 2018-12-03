@@ -159,16 +159,13 @@ class Sphere {
             sphere.vertices.push(v1[0], v1[1], v1[2]);
             sphere.vertices.push(v2[0], v2[1], v2[2]);
             sphere.vertices.push(v3[0], v3[1], v3[2]);
-            n = Sphere.normalize(v1, sphere.size_ration);
-            sphere.normals.push(n[0], n[1], n[2]);
-            n = Sphere.normalize(v2, sphere.size_ration);
-            sphere.normals.push(n[0], n[1], n[2]);
-            n = Sphere.normalize(v3, sphere.size_ration);
-            sphere.normals.push(n[0], n[1], n[2]);
+            n = Sphere.findNormalofTriangle(v1, v2, v3);
 
             for(let i = 0; i < 3; i++) {    // foreach vertex
                 // Add color
                 sphere.colors.push(sphere.vertexColor[0], sphere.vertexColor[1], sphere.vertexColor[2], sphere.vertexColor[3]);
+                // Add Normal
+                sphere.normals.push(n[0], n[1], n[2]);
             }
 
             sphere.indices.push(sphere.indexCnt, sphere.indexCnt+1, sphere.indexCnt+2);
