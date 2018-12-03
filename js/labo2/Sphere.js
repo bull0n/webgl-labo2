@@ -12,13 +12,11 @@ class Sphere {
     /**
      * Constructor of a sphere
      * @param {*} center where the sphere is placed. Default value: [0.0, 0.0, 0.0]
-     * @param {*} size_ration size ratio of the sphere. Default value: 1
      * @param {*} subdivision times the sphere will be precise
      */
-    constructor(center = [0.0, 0.0, 0.0], subdivision = 0.0, size_ration = 1.0)
+    constructor(center = [0.0, 0.0, 0.0], subdivision = 0.0)
     {
         this.center = center;
-        this.size_ration = size_ration;
         this.subdivision = subdivision;
 
         this.initializeArrays();
@@ -77,23 +75,12 @@ class Sphere {
     }
 
     /**
-     * set the size of the radius of the sphere
-     * @param {float} sizeRation radius of the sphere
-     */
-    setSizeRation(sizeRation)
-    {
-        this.initializeArrays();
-        this.size_ration = sizeRation;
-        this.createGeometry();
-    }
-
-    /**
      * Push the points of the icosahedron
      */
     icosahedron_vertex()
     {
-        var x = this.X * this.size_ration;
-        var z = this.Z * this.size_ration;
+        var x = this.X;
+        var z = this.Z;
 
         this.icosahedronvertex.push(-x, 0.0, z);
         this.icosahedronvertex.push(x, 0.0, z);
@@ -196,9 +183,9 @@ class Sphere {
                 v23.push( (v2[i]+v3[i])/2.0 );
                 v31.push( (v3[i]+v1[i])/2.0 );
             }
-            v12 = Sphere.normalize(v12, sphere.size_ration);
-            v23 = Sphere.normalize(v23, sphere.size_ration);
-            v31 = Sphere.normalize(v31, sphere.size_ration);
+            v12 = Sphere.normalize(v12);
+            v23 = Sphere.normalize(v23);
+            v31 = Sphere.normalize(v31);
 
             this.fromOneToFourTriangles(v1, v12, v31, depth-1);
             this.fromOneToFourTriangles(v2, v23, v12, depth-1);
@@ -210,9 +197,8 @@ class Sphere {
     /**
      * Normalize a vector using the size ratio of a sphere
      * @param {Array} base_vector Vector to normalize
-     * @param {float} size_ration size ratio of the sphere
      */
-    static normalize(vector, size_ration)
+    static normalize(vector)
     {
         var d = Math.sqrt(vector[0]*vector[0] + vector[1]*vector[1] + vector[2]*vector[2]);
         if (d != 0.0) {
