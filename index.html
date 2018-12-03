@@ -131,7 +131,7 @@
 				glContext.uniform3f(prg.lightPositionUniform, 1, 1, 1);
 				glContext.uniform3f(prg.lightAmbientUniform,0.1,0.1,0.1);
 				glContext.uniform3f(prg.materialSpecularUniform, 0.5,0.5,0.5);
-				glContext.uniform3f(prg.materialDiffuseUniform, 0.3,0.3,0.3);
+				glContext.uniform3f(prg.materialDiffuseUniform, 0.5,0.5,0.5);
 				glContext.uniform1f(prg.shininessUniform, 24.0);
 			}
 
@@ -292,7 +292,7 @@
 		<div>
 			<label>
 				Subdivision de la sphère :
-				<input type="range" min="1" max="6" id="subdivision" value="3" />
+				<input type="range" min="0" max="5" id="subdivision" value="3" />
 			</label>
 		</div>
 		<div>
@@ -316,7 +316,15 @@
 		</ul>
 
 		<p>
-			Blabla ?
+			Afin de nous préparer au mieux à nos projets personnels prévu pour le semestre de printemps, nous avons décidé d'utiliser les points chauds de chacun d'eux pour explorer au mieux WebGL.
+			Voici donc un métronome aléatoire composé de sphères. Chaque secondes, chaque sphère est déplacé à une nouvelle postion. La position de chaque sphère
+			est générer grâce à l'algorithme Midpoint Displacement. Le trait rouge reliant les sphères représente donc le tracé généré à chaque tic. Concernant les sphères, ces dernières sont
+			modelisé par subdivision.
+		</p>
+		<p>
+			Les paramètres modifiables sont le rayon des sphères, le nombre de sphères présents sur le segment, le temps entre la génération de nouvelles positions, et le nombre de subdivision des sphères.
+			Il est possible de stopper puis relancer le timer qui bloque ou active le métronome. Il est aussi possible de bouger faire tourner les différents éléments en déplacant la souris dans le canevas
+			tout en cliquant.
 		</p>
 	</body>
 	<script src='./js/mouseMotionHandling.js'></script>
