@@ -62,7 +62,7 @@
 			vec3 L = normalize(vLightRay);
 			vec3 N = normalize(vNormal);
 			float lambertTerm = dot(N,-L);
-			vec3 finalColor = vVertexColor.xyz;
+			vec3 finalColor = vVertexColor.xyz + uLightAmbient.xyz;
 
 			if(lambertTerm > 0.0)
 			{
@@ -337,12 +337,12 @@
 
 		<p>
 			Afin de nous préparer au mieux à nos projets personnels prévu pour le semestre de printemps, nous avons décidé d'utiliser les points chauds de chacun d'eux pour explorer au mieux WebGL.
-			Voici donc un métronome aléatoire composé de sphères. Chaque secondes, chaque sphère est déplacé à une nouvelle postion. La position de chaque sphère
-			est générer grâce à l'algorithme Midpoint Displacement. Le trait rouge reliant les sphères représente donc le tracé généré à chaque tic. Concernant les sphères, ces dernières sont
-			modelisé par subdivision.
+			Voici donc un métronome aléatoire composé de sphères. Chaque seconde, chaque sphère est déplacé à une nouvelle postion. La position de chaque sphère
+			est générée grâce à l'algorithme Midpoint Displacement. Le trait rouge reliant les sphères représente donc le tracé généré à chaque tic. Concernant les sphères, ces dernières sont
+			modelisées par subdivision.
 		</p>
 		<p>
-			Les paramètres modifiables sont le rayon des sphères, le nombre de sphères présents sur le segment, le temps entre la génération de nouvelles positions, et le nombre de subdivision des sphères.
+			Les paramètres modifiables sont le rayon des sphères, le nombre de sphères présentes sur le segment, le temps entre la génération de nouvelles positions, et le nombre de subdivision des sphères.
 			Il est possible de stopper puis relancer le timer qui bloque ou active le métronome. Il est aussi possible de bouger faire tourner les différents éléments en déplacant la souris dans le canevas
 			tout en cliquant.
 		</p>
