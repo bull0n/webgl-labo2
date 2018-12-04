@@ -80,7 +80,7 @@
 			// projection matrix
 			var mvMatrix = mat4.create();
 			var pMatrix = mat4.create();
-			var cameraZ = -3.0;
+			var cameraZ = -1.5;
 			var translation = mat4.create();
 
 			// init midPoint
@@ -142,7 +142,7 @@
 				glContext.uniform3f(prg.materialDiffuseUniform, 0.5,0.5,0.5);
 				glContext.uniform1f(prg.shininessUniform, 24.0);
 			}
-			
+
 			/**
 			 * Intialize the buffers
 			 */
@@ -186,7 +186,7 @@
 				// draw the sphere scaled and translated
 				for(let i = 0; i < midpoint.vertices.length; i+=3)
 				{
-					let currentPos = vec3.fromValues(midpoint.vertices[i], midpoint.vertices[i+1], midpoint.vertices[i+2]-3);
+					let currentPos = vec3.fromValues(midpoint.vertices[i], midpoint.vertices[i+1], midpoint.vertices[i+2]+cameraZ*2);
 
 					mat4.identity(transformMatrix);
 					mat4.translate(transformMatrix, transformMatrix, currentPos);
@@ -197,7 +197,7 @@
 					sphere.render();
 				}
 			}
-			
+
 			/**
 			 * Initialize WebGL in canevas webgl-canevas
 			 */
