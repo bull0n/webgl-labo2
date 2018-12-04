@@ -295,6 +295,6 @@ class Sphere {
         glContext.bindBuffer(glContext.ARRAY_BUFFER, this.colorsBuffer);
         glContext.vertexAttribPointer(prg.colorAttribute, 4, glContext.FLOAT, false, 0, 0);
         glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
-        glContext.drawElements(glContext.TRIANGLE_STRIP, indices.length, glContext.UNSIGNED_SHORT,0);
+        glContext.drawElements(glContext.LINES, indices.length, glContext.UNSIGNED_SHORT,0);
     }
 }

@@ -62,7 +62,7 @@
 			vec3 L = normalize(vLightRay);
 			vec3 N = normalize(vNormal);
 			float lambertTerm = dot(N,-L);
-			vec3 finalColor = vVertexColor.xyz;
+			vec3 finalColor = vVertexColor.xyz + uLightAmbient.xyz;
 
 			if(lambertTerm > 0.0)
 			{
