@@ -7,7 +7,6 @@
 		<script src='./js/gl-matrix-min.js'></script>
 		<script src='./js/webglTools.js'></script>
 		<script src='./js/labo2/Tools.js'></script>
-		<script src='./js/labo2/SimpleTriangle.js'></script>
 		<!-- <script src='./js/labo2/Midpoint.js'></script> -->
 		<script src='./js/labo2/AnimatedMidpoint.js'></script>
 		<script src='./js/labo2/Sphere.js'></script>
@@ -104,10 +103,16 @@
 			var timeTimer = 1000;
 			var timer = setInterval(timerTick, timeTimer);
 
+			/**
+			 * Conversion of degre to radian value
+			 */
 			function degToRad(degrees) {
 				return (degrees * Math.PI / 180.0);
 			}
 
+			/**
+			 * Intiatialize shader parameters
+			 */
 			function initShaderParameters(prg)
 			{
 				prg.pMatrixUniform = glContext.getUniformLocation(prg, 'uPMatrix');
@@ -126,6 +131,9 @@
 				sphere.setupShader(prg);
 			}
 
+			/**
+			 * Intialize the light of the scene
+			 */
 			function initLights()
 			{
 				glContext.uniform3f(prg.lightPositionUniform, 1, 1, 1);
@@ -134,13 +142,19 @@
 				glContext.uniform3f(prg.materialDiffuseUniform, 0.5,0.5,0.5);
 				glContext.uniform1f(prg.shininessUniform, 24.0);
 			}
-
+			
+			/**
+			 * Intialize the buffers
+			 */
 			function initBuffers()
 			{
 				midpoint.createGeometry();
 				sphere.createGeometry();
 			}
 
+			/**
+			 * Draw scene in canevas
+			 */
 			function drawScene()
 			{
 				glContext.clearColor(0.1, 0.1, 0.1, 1.0);
@@ -183,7 +197,10 @@
 					sphere.render();
 				}
 			}
-
+			
+			/**
+			 * Initialize WebGL in canevas webgl-canevas
+			 */
 			function initWebGL()
 			{
 				glContext = getGLContext('webgl-canvas');
@@ -206,6 +223,9 @@
 				midpoint.setNewTarget();
 			}
 
+			/**
+			 * Camera function
+			 */
 			function camera()
 			{
 				translationMat = mat4.create();
