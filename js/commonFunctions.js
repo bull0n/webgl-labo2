@@ -47,15 +47,15 @@ function displayTitle(title, a, b, c, d, e, f, g) {
     }*/
 
     // make a similar title for all JS example presented in this course:
-    var titleAsHeader = "<header><h1>&nbsp;" + title + "<br /></h1><br>&nbsp;&nbsp;<a href='http://webgl3d.info' style='text-decoration:none; color: white;'>WebGL par la pratique&copy; 2015</a></header>";
+    var titleAsHeader = "<header><h1>&nbsp;" + title + "<br /></h1><br>&nbsp;&nbsp;<a href='http://webgl3d.info' style='text-decoration:none; color: white;'>WebGL par la pratique&copy; 2018</a></header>";
     document.write(titleAsHeader);
     document.title = title;
-    
+
     var url = window.location.pathname;
 	var filename = url.substring(url.lastIndexOf('/')+1);
 	//console.log(filename);
 
-  //google analytics tracking  
+  //google analytics tracking
 //  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 //  ga('create', 'UA-63533478-1', 'auto');  ga('send', 'pageview', {  page: filename, title: title});
 }

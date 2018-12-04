@@ -337,14 +337,27 @@
 
 		<p>
 			Afin de nous préparer au mieux à nos projets personnels prévu pour le semestre de printemps, nous avons décidé d'utiliser les points chauds de chacun d'eux pour explorer au mieux WebGL.
-			Voici donc un métronome aléatoire composé de sphères. Chaque seconde, chaque sphère est déplacé à une nouvelle postion. La position de chaque sphère
-			est générée grâce à l'algorithme Midpoint Displacement. Le trait rouge reliant les sphères représente donc le tracé généré à chaque tic. Concernant les sphères, ces dernières sont
-			modelisées par subdivision.
+			Voici donc un métronome aléatoire composé de sphères. Chaque seconde, chaque sphère est déplacée à une nouvelle postion. La position de chaque sphère
+			est générée grâce à l'algorithme Midpoint Displacement. Le trait rouge reliant les sphères représente donc le tracé généré à chaque tic. A chaque tic du metronome, de nouveaux points sont recalculés selon l'alorithme Midpoint Displacement.
+			Concernant les sphères, ces dernières sont
+			modelisées par subdivision d'isocaèdre.
+		</p>
+		<p>
+			Les sphères sont dessinées uniquement à l'initialisation de la scène et au changement du paramètre de subdivision. Sinon la sphère est translatée et redimensionée par une matrice de transformation.
+			Ce qui permet de les redessiner sans calculer toute la géométrie de la sphère et de n'avoir qu'une unique sphère en mémoire.
+		</p>
+		<p>
+			La camera permet de placer un axe de rotation sur tous les objets (sphère et lignes) afin de les voir sous plusieurs angles. Les objets sont donc transformés.
+			Afin d'avoir des objets qui se déplacent ensemble avec la rotation, il aurait fallu changer la position de la caméra sur une surface sphérique autour des objets plutôt que de tourner chaque objet.
 		</p>
 		<p>
 			Les paramètres modifiables sont le rayon des sphères, le nombre de sphères présentes sur le segment, le temps entre la génération de nouvelles positions, et le nombre de subdivision des sphères.
 			Il est possible de stopper puis relancer le timer qui bloque ou active le métronome. Il est aussi possible de bouger faire tourner les différents éléments en déplacant la souris dans le canevas
 			tout en cliquant.
+		</p>
+		<p>
+			Ce projet est donc un réel laboratoire nous ayant permis de mieux comprendre les différents aspects qui le compose. Que ce soit la modélisation d'une sphère par subdivision, son illumination
+			via la génération de ses normales, l'utilisation de Phong et même l'animation. Aussi, tous ces différents points nous ont permis de mieux comprendre les transformations matricielles, aspect essentiel du projet.
 		</p>
 	</body>
 	<script src='./js/mouseMotionHandling.js'></script>
